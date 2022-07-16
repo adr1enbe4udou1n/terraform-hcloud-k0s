@@ -1,6 +1,6 @@
 #cloud-config
 users:
-  - name: demo
+  - name: ${sudo_user}
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
@@ -16,7 +16,7 @@ manage_etc_hosts: false
 write_files:
   - path: /etc/hosts
     content: |
-      10.0.0.2 ${prefix_name} ${prefix_name}.example.org
+      10.0.0.2 ${prefix_name} ${cluster_domain}
     append: true
 
 runcmd:
@@ -27,3 +27,4 @@ runcmd:
   - sh bootstrap-salt.sh -i ${minion_id}
   - 'sed -i "s/#master: salt/master: ${prefix_name}/" /etc/salt/minion'
   - systemctl restart salt-minion
+  - echo "${controller_public_ssh_key}" | cat >> /home/${sudo_user}/.ssh/authorized_keys

@@ -1,0 +1,39 @@
+apiVersion: k0sctl.k0sproject.io/v1beta1
+kind: Cluster
+metadata:
+  name: ${prefix_name}-cluster
+spec:
+  hosts:
+    - ssh:
+        address: ${controller_ip}
+        user: ${sudo_user}
+        port: ${ssh_port}
+        keyPath: ${private_ssh_key_path}
+      role: controller+worker
+      privateInterface: ${private_interface}
+      installFlags:
+        - --kubelet-extra-args "--node-ip=${controller_ip}"
+%{ for addr in ip_addrs ~}
+    - ssh:
+        address: ${addr}
+        user: ${sudo_user}
+        port: ${ssh_port}
+        keyPath: ${private_ssh_key_path}
+      role: worker
+      privateInterface: ${private_interface}
+      installFlags:
+        - --kubelet-extra-args "--node-ip=${addr}"
+%{ endfor ~}
+  k0s:
+    version: 1.24.2+k0s.0
+    config:
+      spec:
+        api:
+          externalAddress: ${cluster_domain}
+          sans:
+            - ${cluster_domain}
+        storage:
+          etcd:
+            peerAddress: ${controller_ip}
+        network:
+          provider: calico

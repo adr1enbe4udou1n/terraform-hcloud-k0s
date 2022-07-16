@@ -1,114 +1,10 @@
-terraform {
-  required_providers {
-    hcloud = {
-      source  = "hetznercloud/hcloud"
-      version = "1.34.3"
-    }
-  }
-}
-
-variable "prefix_name" {
-  type = string
-}
-
-variable "hcloud_token" {
-  type      = string
-  sensitive = true
-}
-
-variable "public_ssh_name" {
-  type = string
-}
-
-variable "public_ssh_key" {
-  type      = string
-  sensitive = true
-}
-
-variable "my_ip_address" {
-  type      = string
-  sensitive = true
-}
-
-provider "hcloud" {
-  token = var.hcloud_token
-}
-
-resource "hcloud_ssh_key" "default" {
-  name       = var.public_ssh_name
-  public_key = var.public_ssh_key
-}
-
-resource "hcloud_network" "network" {
-  name     = "network"
-  ip_range = "10.0.0.0/16"
-}
-
-resource "hcloud_network_subnet" "network-subnet" {
-  network_id   = hcloud_network.network.id
-  type         = "cloud"
-  network_zone = "eu-central"
-  ip_range     = "10.0.0.0/24"
-}
-
-resource "hcloud_firewall" "firewall-private" {
-  name = "firewall-private"
-}
-
-resource "hcloud_firewall" "firewall-public" {
-  name = "firewall-public"
-  rule {
-    direction = "in"
-    port      = "22"
-    protocol  = "tcp"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
-  }
-  rule {
-    direction = "in"
-    port      = "80"
-    protocol  = "tcp"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
-  }
-  rule {
-    direction = "in"
-    port      = "443"
-    protocol  = "tcp"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
-  }
-  rule {
-    direction = "in"
-    port      = "2222"
-    protocol  = "tcp"
-    source_ips = [
-      "${var.my_ip_address}/32"
-    ]
-  }
-  rule {
-    direction = "in"
-    port      = "6443"
-    protocol  = "tcp"
-    source_ips = [
-      "${var.my_ip_address}/32"
-    ]
-  }
-}
-
 resource "hcloud_server" "controller-01" {
   name        = "${var.prefix_name}-controller-01"
   image       = "ubuntu-22.04"
   server_type = "cx21"
-  location    = "nbg1"
+  location    = var.server_location
   ssh_keys = [
-    var.public_ssh_name
+    var.my_public_ssh_name
   ]
   network {
     network_id = hcloud_network.network.id
@@ -120,10 +16,29 @@ resource "hcloud_server" "controller-01" {
   depends_on = [
     hcloud_network_subnet.network-subnet
   ]
-  user_data = templatefile("init_controller.tpl", {
-    public_ssh_key = var.public_ssh_key
-    prefix_name    = var.prefix_name
-    minion_id      = "controller-01"
+  user_data = templatefile("init_controller.tftpl", {
+    sudo_user                  = var.sudo_user
+    public_ssh_key             = var.my_public_ssh_key
+    prefix_name                = var.prefix_name
+    cluster_domain             = var.my_cluster_domain
+    minion_id                  = "controller-01"
+    controller_ssh_key_name    = var.controller_ssh_key_name
+    controller_private_ssh_key = var.controller_private_ssh_key
+    controller_public_ssh_key  = var.controller_public_ssh_key
+    k0sctl_file_content = templatefile("k0sctl.tftpl", {
+      prefix_name          = var.prefix_name
+      controller_ip        = "10.0.0.2"
+      cluster_domain       = var.my_cluster_domain
+      sudo_user            = var.sudo_user
+      ssh_port             = "2222"
+      private_ssh_key_path = "~/.ssh/${var.controller_ssh_key_name}"
+      private_interface    = "ens10"
+      ip_addrs = [
+        "10.0.0.3",
+        "10.0.0.4",
+        "10.0.0.5",
+      ]
+    })
   })
 }
 
@@ -131,9 +46,9 @@ resource "hcloud_server" "worker-01" {
   name        = "${var.prefix_name}-worker-01"
   image       = "ubuntu-22.04"
   server_type = "cx21"
-  location    = "nbg1"
+  location    = var.server_location
   ssh_keys = [
-    var.public_ssh_name
+    var.my_public_ssh_name
   ]
   network {
     network_id = hcloud_network.network.id
@@ -146,10 +61,13 @@ resource "hcloud_server" "worker-01" {
     hcloud_network_subnet.network-subnet,
     hcloud_server.controller-01
   ]
-  user_data = templatefile("init_worker.tpl", {
-    public_ssh_key = var.public_ssh_key
-    prefix_name    = var.prefix_name
-    minion_id      = "worker-01"
+  user_data = templatefile("init_worker.tftpl", {
+    sudo_user                 = var.sudo_user
+    public_ssh_key            = var.my_public_ssh_key
+    prefix_name               = var.prefix_name
+    cluster_domain            = var.my_cluster_domain
+    minion_id                 = "worker-01"
+    controller_public_ssh_key = var.controller_public_ssh_key
   })
 }
 
@@ -157,9 +75,9 @@ resource "hcloud_server" "worker-02" {
   name        = "${var.prefix_name}-worker-02"
   image       = "ubuntu-22.04"
   server_type = "cx21"
-  location    = "nbg1"
+  location    = var.server_location
   ssh_keys = [
-    var.public_ssh_name
+    var.my_public_ssh_name
   ]
   network {
     network_id = hcloud_network.network.id
@@ -172,10 +90,13 @@ resource "hcloud_server" "worker-02" {
     hcloud_network_subnet.network-subnet,
     hcloud_server.controller-01
   ]
-  user_data = templatefile("init_worker.tpl", {
-    public_ssh_key = var.public_ssh_key
-    prefix_name    = var.prefix_name
-    minion_id      = "worker-02"
+  user_data = templatefile("init_worker.tftpl", {
+    sudo_user                 = var.sudo_user
+    public_ssh_key            = var.my_public_ssh_key
+    prefix_name               = var.prefix_name
+    cluster_domain            = var.my_cluster_domain
+    minion_id                 = "worker-02"
+    controller_public_ssh_key = var.controller_public_ssh_key
   })
 }
 
@@ -183,9 +104,9 @@ resource "hcloud_server" "data-01" {
   name        = "${var.prefix_name}-data-01"
   image       = "ubuntu-22.04"
   server_type = "cx21"
-  location    = "nbg1"
+  location    = var.server_location
   ssh_keys = [
-    var.public_ssh_name
+    var.my_public_ssh_name
   ]
   network {
     network_id = hcloud_network.network.id
@@ -198,10 +119,13 @@ resource "hcloud_server" "data-01" {
     hcloud_network_subnet.network-subnet,
     hcloud_server.controller-01
   ]
-  user_data = templatefile("init_worker.tpl", {
-    public_ssh_key = var.public_ssh_key
-    prefix_name    = var.prefix_name
-    minion_id      = "data-01"
+  user_data = templatefile("init_worker.tftpl", {
+    sudo_user                 = var.sudo_user
+    public_ssh_key            = var.my_public_ssh_key
+    prefix_name               = var.prefix_name
+    cluster_domain            = var.my_cluster_domain
+    minion_id                 = "data-01"
+    controller_public_ssh_key = var.controller_public_ssh_key
   })
 }
 

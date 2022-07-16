@@ -1,6 +1,6 @@
 #cloud-config
 users:
-  - name: demo
+  - name: ${sudo_user}
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
@@ -16,11 +16,25 @@ manage_etc_hosts: false
 write_files:
   - path: /etc/hosts
     content: |
-      10.0.0.2 ${prefix_name} ${prefix_name}.example.org
+      10.0.0.2 ${prefix_name} ${cluster_domain}
       10.0.0.3 ${prefix_name}-worker-01
       10.0.0.4 ${prefix_name}-worker-02
       10.0.0.5 ${prefix_name}-data-01
     append: true
+  - path: /home/${sudo_user}/.ssh/${controller_ssh_key_name}
+    owner: ${sudo_user}:${sudo_user}
+    permissions: '0600'
+    content: |
+      ${controller_private_ssh_key}
+  - path: /home/${sudo_user}/.ssh/${controller_ssh_key_name}.pub
+    owner: ${sudo_user}:${sudo_user}
+    permissions: '0644'
+    content: |
+      ${controller_public_ssh_key}
+  - path: /home/${sudo_user}/k0sctl.yaml
+    owner: ${sudo_user}:${sudo_user}
+    content: |
+      ${k0sctl_file_content}
 
 runcmd:
   - sed -i "/^#Port/s/^.*$/Port 2222/" /etc/ssh/sshd_config
