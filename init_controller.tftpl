@@ -21,18 +21,17 @@ write_files:
       10.0.0.4 ${prefix_name}-worker-02
       10.0.0.5 ${prefix_name}-data-01
     append: true
-  - path: /home/${sudo_user}/.ssh/${controller_ssh_key_name}
-    owner: ${sudo_user}:${sudo_user}
-    permissions: '0600'
+  - path: /${controller_ssh_key_name}
+    encoding: b64
+    permissions: "0600"
     content: |
       ${controller_private_ssh_key}
-  - path: /home/${sudo_user}/.ssh/${controller_ssh_key_name}.pub
-    owner: ${sudo_user}:${sudo_user}
-    permissions: '0644'
+  - path: /${controller_ssh_key_name}.pub
+    permissions: "0644"
     content: |
       ${controller_public_ssh_key}
-  - path: /home/${sudo_user}/k0sctl.yaml
-    owner: ${sudo_user}:${sudo_user}
+  - path: /k0sctl.yaml
+    encoding: b64
     content: |
       ${k0sctl_file_content}
 
@@ -47,3 +46,5 @@ runcmd:
   - wget https://github.com/k0sproject/k0sctl/releases/download/v0.13.1/k0sctl-linux-x64
   - chmod +x k0sctl-linux-x64
   - mv k0sctl-linux-x64 /usr/local/bin/k0sctl
+  - chown ${sudo_user}:${sudo_user} /${controller_ssh_key_name}* && mv /${controller_ssh_key_name}* /home/${sudo_user}/.ssh
+  - chown ${sudo_user}:${sudo_user} /k0sctl.yaml && mv /k0sctl.yaml /home/${sudo_user}

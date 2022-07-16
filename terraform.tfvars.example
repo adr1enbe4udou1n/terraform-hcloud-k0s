@@ -7,5 +7,9 @@ my_ip_address              = ""
 my_cluster_domain          = "kubedemo.example.org"
 sudo_user                  = "demo"
 controller_ssh_key_name    = "id_ed25519"
-controller_private_ssh_key = ""
+controller_private_ssh_key = <<EOF
+-----BEGIN OPENSSH PRIVATE KEY-----
+
+-----END OPENSSH PRIVATE KEY-----
+EOF
 controller_public_ssh_key  = ""

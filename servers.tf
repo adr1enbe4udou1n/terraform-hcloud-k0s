@@ -23,22 +23,24 @@ resource "hcloud_server" "controller-01" {
     cluster_domain             = var.my_cluster_domain
     minion_id                  = "controller-01"
     controller_ssh_key_name    = var.controller_ssh_key_name
-    controller_private_ssh_key = var.controller_private_ssh_key
+    controller_private_ssh_key = base64encode(var.controller_private_ssh_key)
     controller_public_ssh_key  = var.controller_public_ssh_key
-    k0sctl_file_content = templatefile("k0sctl.tftpl", {
-      prefix_name          = var.prefix_name
-      controller_ip        = "10.0.0.2"
-      cluster_domain       = var.my_cluster_domain
-      sudo_user            = var.sudo_user
-      ssh_port             = "2222"
-      private_ssh_key_path = "~/.ssh/${var.controller_ssh_key_name}"
-      private_interface    = "ens10"
-      ip_addrs = [
-        "10.0.0.3",
-        "10.0.0.4",
-        "10.0.0.5",
-      ]
-    })
+    k0sctl_file_content = base64encode(
+      templatefile("k0sctl.tftpl", {
+        prefix_name          = var.prefix_name
+        controller_ip        = "10.0.0.2"
+        cluster_domain       = var.my_cluster_domain
+        sudo_user            = var.sudo_user
+        ssh_port             = "2222"
+        private_ssh_key_path = "~/.ssh/${var.controller_ssh_key_name}"
+        private_interface    = "ens10"
+        ip_addrs = [
+          "10.0.0.3",
+          "10.0.0.4",
+          "10.0.0.5",
+        ]
+      })
+    )
   })
 }
 
