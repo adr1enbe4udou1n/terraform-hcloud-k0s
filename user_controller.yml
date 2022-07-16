@@ -1,0 +1,35 @@
+#cloud-config
+users:
+  - name: okami
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-ed25519 <key>
+
+timezone: Europe/Paris
+locale: fr_FR.UTF-8
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+manage_etc_hosts: false
+
+write_files:
+  - path: /etc/hosts
+    content: |
+      10.0.0.2 kubedemo kubedemo.example.org
+      10.0.0.3 kubedemo-worker-01
+      10.0.0.4 kubedemo-worker-02
+      10.0.0.5 kubedemo-data-01
+    append: true
+
+runcmd:
+  - sed -i "/^#Port/s/^.*$/Port 2222/" /etc/ssh/sshd_config
+  - sed -i "/^PermitRootLogin/s/^.*$/PermitRootLogin no/" /etc/ssh/sshd_config
+  - systemctl restart ssh
+  - curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
+  - sh bootstrap-salt.sh -M
+  - 'sed -i "s/#master: salt/master: kubedemo/" /etc/salt/minion'
+  - systemctl restart salt-minion
+  - wget https://github.com/k0sproject/k0sctl/releases/download/v0.13.1/k0sctl-linux-x64
+  - chmod +x k0sctl-linux-x64
+  - mv k0sctl-linux-x64 /usr/local/bin/k0sctl
