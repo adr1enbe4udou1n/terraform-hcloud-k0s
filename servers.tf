@@ -5,35 +5,24 @@ terraform {
       version = "1.34.3"
     }
   }
-  required_providers {
-    cloudinit = {
-      source  = "hashicorp/cloudinit"
-      version = "2.2.0"
-    }
-  }
 }
 
-data "cloudinit_config" "init-controller" {
-  gzip          = false
-  base64_encode = false
-
-  part {
-    content_type = "text/cloud-config"
-    content      = templatefile("init_controller.tpl", { public_ssh_key = var.public_ssh_key })
-  }
-}
-
-data "cloudinit_config" "init-worker" {
-  gzip          = false
-  base64_encode = false
-
-  part {
-    content_type = "text/cloud-config"
-    content      = templatefile("init_worker.tpl", { public_ssh_key = var.public_ssh_key })
-  }
+variable "prefix_name" {
+  type = string
 }
 
 variable "hcloud_token" {
+  type      = string
+  sensitive = true
+}
+
+variable "public_ssh_key" {
+  type      = string
+  sensitive = true
+}
+
+variable "my_ip_address" {
+  type      = string
   sensitive = true
 }
 
@@ -109,10 +98,10 @@ resource "hcloud_firewall" "firewall-public" {
   }
 }
 
-resource "hcloud_server" "kube-controller-01" {
-  name        = "kube-controller-01"
+resource "hcloud_server" "controller-01" {
+  name        = "${var.prefix_name}-controller-01"
   image       = "ubuntu-22.04"
-  server_type = "cx11"
+  server_type = "cx21"
   location    = "nbg1"
   ssh_keys = [
     "adrien"
@@ -127,13 +116,16 @@ resource "hcloud_server" "kube-controller-01" {
   depends_on = [
     hcloud_network_subnet.network-subnet
   ]
-  user_data = data.cloudinit_config.init-controller.rendered
+  user_data = templatefile("init_controller.tpl", {
+    public_ssh_key = var.public_ssh_key
+    prefix_name    = var.prefix_name
+  })
 }
 
-resource "hcloud_server" "kube-worker-01" {
-  name        = "kube-worker-01"
+resource "hcloud_server" "worker-01" {
+  name        = "${var.prefix_name}-worker-01"
   image       = "ubuntu-22.04"
-  server_type = "cx11"
+  server_type = "cx21"
   location    = "nbg1"
   ssh_keys = [
     "adrien"
@@ -147,15 +139,18 @@ resource "hcloud_server" "kube-worker-01" {
   ]
   depends_on = [
     hcloud_network_subnet.network-subnet,
-    hcloud_server.kube-controller-01
+    hcloud_server.controller-01
   ]
-  user_data = data.cloudinit_config.init-worker.rendered
+  user_data = templatefile("init_worker.tpl", {
+    public_ssh_key = var.public_ssh_key
+    prefix_name    = var.prefix_name
+  })
 }
 
-resource "hcloud_server" "kube-worker-02" {
-  name        = "kube-worker-02"
+resource "hcloud_server" "worker-02" {
+  name        = "${var.prefix_name}-worker-02"
   image       = "ubuntu-22.04"
-  server_type = "cx11"
+  server_type = "cx21"
   location    = "nbg1"
   ssh_keys = [
     "adrien"
@@ -169,15 +164,18 @@ resource "hcloud_server" "kube-worker-02" {
   ]
   depends_on = [
     hcloud_network_subnet.network-subnet,
-    hcloud_server.kube-controller-01
+    hcloud_server.controller-01
   ]
-  user_data = data.cloudinit_config.init-worker.rendered
+  user_data = templatefile("init_worker.tpl", {
+    public_ssh_key = var.public_ssh_key
+    prefix_name    = var.prefix_name
+  })
 }
 
-resource "hcloud_server" "kube-data-01" {
-  name        = "kube-data-01"
+resource "hcloud_server" "data-01" {
+  name        = "${var.prefix_name}-data-01"
   image       = "ubuntu-22.04"
-  server_type = "cx11"
+  server_type = "cx21"
   location    = "nbg1"
   ssh_keys = [
     "adrien"
@@ -191,15 +189,18 @@ resource "hcloud_server" "kube-data-01" {
   ]
   depends_on = [
     hcloud_network_subnet.network-subnet,
-    hcloud_server.kube-controller-01
+    hcloud_server.controller-01
   ]
-  user_data = data.cloudinit_config.init-worker.rendered
+  user_data = templatefile("init_worker.tpl", {
+    public_ssh_key = var.public_ssh_key
+    prefix_name    = var.prefix_name
+  })
 }
 
 resource "hcloud_volume" "volume1" {
   name      = "volume1"
   size      = 10
-  server_id = hcloud_server.kube-data-01.id
+  server_id = hcloud_server.data-01.id
   automount = true
   format    = "ext4"
 }

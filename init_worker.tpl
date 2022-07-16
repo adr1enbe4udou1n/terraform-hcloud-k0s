@@ -1,6 +1,6 @@
 #cloud-config
 users:
-  - name: okami
+  - name: demo
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
@@ -16,7 +16,7 @@ manage_etc_hosts: false
 write_files:
   - path: /etc/hosts
     content: |
-      10.0.0.2 kubedemo kubedemo.example.org
+      10.0.0.2 ${prefix_name} ${prefix_name}.example.org
     append: true
 
 runcmd:
@@ -25,5 +25,5 @@ runcmd:
   - systemctl restart ssh
   - curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
   - sh bootstrap-salt.sh
-  - 'sed -i "s/#master: salt/master: kubedemo/" /etc/salt/minion'
+  - 'sed -i "s/#master: salt/master: ${prefix_name}/" /etc/salt/minion'
   - systemctl restart salt-minion
