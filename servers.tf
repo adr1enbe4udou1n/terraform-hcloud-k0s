@@ -16,6 +16,10 @@ variable "hcloud_token" {
   sensitive = true
 }
 
+variable "public_ssh_name" {
+  type = string
+}
+
 variable "public_ssh_key" {
   type      = string
   sensitive = true
@@ -31,8 +35,8 @@ provider "hcloud" {
 }
 
 resource "hcloud_ssh_key" "default" {
-  name       = "adrien"
-  public_key = file("~/.ssh/id_ed25519.pub")
+  name       = var.public_ssh_name
+  public_key = var.public_ssh_key
 }
 
 resource "hcloud_network" "network" {
@@ -52,7 +56,7 @@ resource "hcloud_firewall" "firewall-private" {
 }
 
 resource "hcloud_firewall" "firewall-public" {
-  name = "firewall-controller"
+  name = "firewall-public"
   rule {
     direction = "in"
     port      = "22"
@@ -104,7 +108,7 @@ resource "hcloud_server" "controller-01" {
   server_type = "cx21"
   location    = "nbg1"
   ssh_keys = [
-    "adrien"
+    var.public_ssh_name
   ]
   network {
     network_id = hcloud_network.network.id
@@ -128,7 +132,7 @@ resource "hcloud_server" "worker-01" {
   server_type = "cx21"
   location    = "nbg1"
   ssh_keys = [
-    "adrien"
+    var.public_ssh_name
   ]
   network {
     network_id = hcloud_network.network.id
@@ -153,7 +157,7 @@ resource "hcloud_server" "worker-02" {
   server_type = "cx21"
   location    = "nbg1"
   ssh_keys = [
-    "adrien"
+    var.public_ssh_name
   ]
   network {
     network_id = hcloud_network.network.id
@@ -178,7 +182,7 @@ resource "hcloud_server" "data-01" {
   server_type = "cx21"
   location    = "nbg1"
   ssh_keys = [
-    "adrien"
+    var.public_ssh_name
   ]
   network {
     network_id = hcloud_network.network.id
