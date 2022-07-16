@@ -123,6 +123,7 @@ resource "hcloud_server" "controller-01" {
   user_data = templatefile("init_controller.tpl", {
     public_ssh_key = var.public_ssh_key
     prefix_name    = var.prefix_name
+    minion_id      = "controller-01"
   })
 }
 
@@ -148,6 +149,7 @@ resource "hcloud_server" "worker-01" {
   user_data = templatefile("init_worker.tpl", {
     public_ssh_key = var.public_ssh_key
     prefix_name    = var.prefix_name
+    minion_id      = "worker-01"
   })
 }
 
@@ -173,6 +175,7 @@ resource "hcloud_server" "worker-02" {
   user_data = templatefile("init_worker.tpl", {
     public_ssh_key = var.public_ssh_key
     prefix_name    = var.prefix_name
+    minion_id      = "worker-02"
   })
 }
 
@@ -198,6 +201,7 @@ resource "hcloud_server" "data-01" {
   user_data = templatefile("init_worker.tpl", {
     public_ssh_key = var.public_ssh_key
     prefix_name    = var.prefix_name
+    minion_id      = "data-01"
   })
 }
 

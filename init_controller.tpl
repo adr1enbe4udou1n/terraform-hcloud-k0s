@@ -27,7 +27,7 @@ runcmd:
   - sed -i "/^PermitRootLogin/s/^.*$/PermitRootLogin no/" /etc/ssh/sshd_config
   - systemctl restart ssh
   - curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
-  - sh bootstrap-salt.sh -M
+  - sh bootstrap-salt.sh -M -i ${minion_id}
   - 'sed -i "s/#master: salt/master: ${prefix_name}/" /etc/salt/minion'
   - systemctl restart salt-minion
   - wget https://github.com/k0sproject/k0sctl/releases/download/v0.13.1/k0sctl-linux-x64

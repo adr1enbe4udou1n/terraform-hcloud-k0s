@@ -24,6 +24,6 @@ runcmd:
   - sed -i "/^PermitRootLogin/s/^.*$/PermitRootLogin no/" /etc/ssh/sshd_config
   - systemctl restart ssh
   - curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
-  - sh bootstrap-salt.sh
+  - sh bootstrap-salt.sh -i ${minion_id}
   - 'sed -i "s/#master: salt/master: ${prefix_name}/" /etc/salt/minion'
   - systemctl restart salt-minion
