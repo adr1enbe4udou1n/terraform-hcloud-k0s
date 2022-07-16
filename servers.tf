@@ -6,15 +6,31 @@ terraform {
     }
   }
   required_providers {
-    template = {
-      source  = "hashicorp/template"
+    cloudinit = {
+      source  = "hashicorp/cloudinit"
       version = "2.2.0"
     }
   }
 }
 
-provider "template" {
-  # Configuration options
+data "cloudinit_config" "init-controller" {
+  gzip          = false
+  base64_encode = false
+
+  part {
+    content_type = "text/cloud-config"
+    content      = templatefile("init_controller.tpl", { public_ssh_key = var.public_ssh_key })
+  }
+}
+
+data "cloudinit_config" "init-worker" {
+  gzip          = false
+  base64_encode = false
+
+  part {
+    content_type = "text/cloud-config"
+    content      = templatefile("init_worker.tpl", { public_ssh_key = var.public_ssh_key })
+  }
 }
 
 variable "hcloud_token" {
@@ -42,8 +58,12 @@ resource "hcloud_network_subnet" "network-subnet" {
   ip_range     = "10.0.0.0/24"
 }
 
-resource "hcloud_firewall" "firewall-services" {
-  name = "firewall-services"
+resource "hcloud_firewall" "firewall-private" {
+  name = "firewall-private"
+}
+
+resource "hcloud_firewall" "firewall-public" {
+  name = "firewall-controller"
   rule {
     direction = "in"
     port      = "22"
@@ -71,28 +91,20 @@ resource "hcloud_firewall" "firewall-services" {
       "::/0"
     ]
   }
-}
-
-resource "hcloud_firewall" "firewall-ssh" {
-  name = "firewall-ssh"
   rule {
     direction = "in"
     port      = "2222"
     protocol  = "tcp"
     source_ips = [
-      "78.228.120.81/32"
+      "${var.my_ip_address}/32"
     ]
   }
-}
-
-resource "hcloud_firewall" "firewall-controller" {
-  name = "firewall-controller"
   rule {
     direction = "in"
     port      = "6443"
     protocol  = "tcp"
     source_ips = [
-      "78.228.120.81/32"
+      "${var.my_ip_address}/32"
     ]
   }
 }
@@ -110,14 +122,12 @@ resource "hcloud_server" "kube-controller-01" {
     ip         = "10.0.0.2"
   }
   firewall_ids = [
-    hcloud_firewall.firewall-services.id,
-    hcloud_firewall.firewall-ssh.id,
-    hcloud_firewall.firewall-controller.id
+    hcloud_firewall.firewall-public.id,
   ]
   depends_on = [
     hcloud_network_subnet.network-subnet
   ]
-  user_data = file("user_controller.yml")
+  user_data = data.cloudinit_config.init-controller.rendered
 }
 
 resource "hcloud_server" "kube-worker-01" {
@@ -133,13 +143,13 @@ resource "hcloud_server" "kube-worker-01" {
     ip         = "10.0.0.3"
   }
   firewall_ids = [
-    hcloud_firewall.firewall-ssh.id
+    hcloud_firewall.firewall-private.id
   ]
   depends_on = [
     hcloud_network_subnet.network-subnet,
     hcloud_server.kube-controller-01
   ]
-  user_data = file("user_worker.yml")
+  user_data = data.cloudinit_config.init-worker.rendered
 }
 
 resource "hcloud_server" "kube-worker-02" {
@@ -155,13 +165,13 @@ resource "hcloud_server" "kube-worker-02" {
     ip         = "10.0.0.4"
   }
   firewall_ids = [
-    hcloud_firewall.firewall-ssh.id
+    hcloud_firewall.firewall-private.id
   ]
   depends_on = [
     hcloud_network_subnet.network-subnet,
     hcloud_server.kube-controller-01
   ]
-  user_data = file("user_worker.yml")
+  user_data = data.cloudinit_config.init-worker.rendered
 }
 
 resource "hcloud_server" "kube-data-01" {
@@ -177,13 +187,13 @@ resource "hcloud_server" "kube-data-01" {
     ip         = "10.0.0.5"
   }
   firewall_ids = [
-    hcloud_firewall.firewall-ssh.id
+    hcloud_firewall.firewall-private.id
   ]
   depends_on = [
     hcloud_network_subnet.network-subnet,
     hcloud_server.kube-controller-01
   ]
-  user_data = file("user_worker.yml")
+  user_data = data.cloudinit_config.init-worker.rendered
 }
 
 resource "hcloud_volume" "volume1" {

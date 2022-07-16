@@ -4,7 +4,7 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-      - ssh-ed25519 <key>
+      - ${public_ssh_key}
 
 timezone: Europe/Paris
 locale: fr_FR.UTF-8
@@ -17,6 +17,9 @@ write_files:
   - path: /etc/hosts
     content: |
       10.0.0.2 kubedemo kubedemo.example.org
+      10.0.0.3 kubedemo-worker-01
+      10.0.0.4 kubedemo-worker-02
+      10.0.0.5 kubedemo-data-01
     append: true
 
 runcmd:
@@ -24,6 +27,9 @@ runcmd:
   - sed -i "/^PermitRootLogin/s/^.*$/PermitRootLogin no/" /etc/ssh/sshd_config
   - systemctl restart ssh
   - curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
-  - sh bootstrap-salt.sh
+  - sh bootstrap-salt.sh -M
   - 'sed -i "s/#master: salt/master: kubedemo/" /etc/salt/minion'
   - systemctl restart salt-minion
+  - wget https://github.com/k0sproject/k0sctl/releases/download/v0.13.1/k0sctl-linux-x64
+  - chmod +x k0sctl-linux-x64
+  - mv k0sctl-linux-x64 /usr/local/bin/k0sctl
