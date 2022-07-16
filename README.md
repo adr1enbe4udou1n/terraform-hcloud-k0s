@@ -20,7 +20,7 @@ Before starting :checkered_flag:, you need to have a Hetzner cloud account as we
 # Clone this project
 $ git clone https://github.com/adr1enbe4udou1n/terraform-hetzner-kube-sample
 
-# Prepare variables
+# Prepare variables, cf bellow for list
 cp terraform.tfvars.example terraform.tfvars
 
 # Install
@@ -29,7 +29,12 @@ terraform apply
 
 ## Variables reference
 
-TODO
+TODO Table
+
+## Usage
+
+TODO SSH Config
+TODO Kube Cluster install
 
 ## :memo: License ##
 
