@@ -1,5 +1,6 @@
 variable "prefix_name" {
   type        = string
+  default     = "kube"
   description = "The prefix name of all servers hostnames"
 }
 
@@ -11,11 +12,19 @@ variable "hcloud_token" {
 
 variable "server_location" {
   type        = string
+  default     = "nbg1"
   description = "The default location to create hcloud servers"
+}
+
+variable "volume_size" {
+  type        = number
+  default     = 10
+  description = "The volume size of hcloud volume dedicated for the data server node"
 }
 
 variable "my_public_ssh_name" {
   type        = string
+  default     = "kube"
   description = "Your public SSH key identifier for the Hetzner Cloud API"
 }
 
@@ -37,6 +46,7 @@ variable "my_cluster_domain" {
 
 variable "sudo_user" {
   type        = string
+  default     = "kube"
   description = "The non-root user that will be used to access the servers"
 }
 

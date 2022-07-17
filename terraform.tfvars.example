@@ -1,11 +1,12 @@
-prefix_name                = "kubedemo"
+prefix_name                = "kube"
 hcloud_token               = ""
 server_location            = "nbg1"
-my_public_ssh_name         = "demo"
+volume_size                = 10
+my_public_ssh_name         = "kube"
 my_public_ssh_key          = ""
 my_ip_address              = ""
 my_cluster_domain          = "kubedemo.example.org"
-sudo_user                  = "demo"
+sudo_user                  = "kube"
 controller_ssh_key_name    = "id_ed25519"
 controller_private_ssh_key = <<EOF
 -----BEGIN OPENSSH PRIVATE KEY-----

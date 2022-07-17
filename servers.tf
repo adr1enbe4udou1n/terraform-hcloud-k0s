@@ -133,7 +133,7 @@ resource "hcloud_server" "data-01" {
 
 resource "hcloud_volume" "volume1" {
   name      = "volume1"
-  size      = 10
+  size      = var.volume_size
   server_id = hcloud_server.data-01.id
   automount = true
   format    = "ext4"

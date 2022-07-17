@@ -14,6 +14,8 @@ Feel free to add some additional nodes inside `servers.tf` file.
 
 Before starting :checkered_flag:, you need to have a Hetzner cloud account as well as the `terraform` client. On Windows, this is a simple `scoop install terraform`.
 
+Before continue, **DO NOT** reuse any existing project as we'll use terraform ! Create a new empty hcloud empty project with a valid Read/Write API token key.
+
 ## :checkered_flag: Starting ##
 
 ```bash
@@ -29,7 +31,17 @@ terraform apply
 
 ## Variables reference
 
-TODO Table
+| Name         | Purpose                                                            |
+| ------------ | ------------------------------------------------------------------ |
+| hcloud_token | The token to access the Hetzner Cloud API (must have write access) |
+| prefix_name  |                                                                    |
+|              |                                                                    |
+|              |                                                                    |
+|              |                                                                    |
+|              |                                                                    |
+|              |                                                                    |
+|              |                                                                    |
+|              |                                                                    |
 
 ## Usage
 
