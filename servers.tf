@@ -32,7 +32,6 @@ resource "hcloud_server" "controller-01" {
         controller_ip        = "10.0.0.2"
         ssh_port             = "2222"
         private_ssh_key_path = "~/.ssh/id_cluster"
-        private_interface    = "ens10"
         ip_addrs = [
           "10.0.0.3",
           "10.0.0.4",
