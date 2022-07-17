@@ -1,7 +1,5 @@
 # Terraform K0S Hetzner Installer
 
-This is a **:wip:**
-
 ## :dart: About ##
 
 Terraform project for generating a ready to go secured based cloud infrastructure through Hetzner Cloud provider, with a ready-to-install [K0S](https://k0sproject.io/), a zero-friction Kubernetes distribution. The cluster will be composed of 4 servers :
@@ -11,6 +9,8 @@ Terraform project for generating a ready to go secured based cloud infrastructur
 3. 1 data node for DB specific tasks
 
 Feel free to add some additional nodes inside `servers.tf` file.
+
+This Terraform template includes [Salt Project](https://docs.saltproject.io) as well for easy global cluster management, perfect for upgrades in one single time !
 
 ## :white_check_mark: Requirements ##
 
@@ -58,6 +58,12 @@ Once terraform installation is complete, terraform will output the public IP mai
 Go to your registrar and create new DNS entry named as above `cluster_fqdn` and point it to the printed public IP. Then integrate the SSH config to your own SSH config.
 
 Finally, use `ssh <cluster_name>-cp` in order to log in to your main control pane node. For other nodes, the control pane node will be used as a bastion for direct access to other nodes, so you can use `ssh <cluster_name>-w1` to directly access to your worker-01 node.
+
+### Salt
+
+In order to active `Salt`, just type `sudo salt-key -A` in order to accept all minions. You are now ready for using `sudo salt '*' pkg.upgrade` from main control pane in order to upgrade all nodes in one single time.
+
+### K0S install
 
 Once successfully logged, note the `k0sctl.yaml` file automatically generated in your home directory. You're now finally ready to install your Kubernetes cluster by simply launching `k0sctl apply` !
 
