@@ -1,4 +1,4 @@
-# Terraform K0S Hetzner Installer
+# Terraform Hetzner Cloud K0S
 
 ## :dart: About ##
 
