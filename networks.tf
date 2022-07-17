@@ -44,19 +44,15 @@ resource "hcloud_firewall" "firewall-public" {
     ]
   }
   rule {
-    direction = "in"
-    port      = "2222"
-    protocol  = "tcp"
-    source_ips = [
-      "${var.my_ip_address}/32"
-    ]
+    direction  = "in"
+    port       = "2222"
+    protocol   = "tcp"
+    source_ips = var.my_ip_addresses
   }
   rule {
-    direction = "in"
-    port      = "6443"
-    protocol  = "tcp"
-    source_ips = [
-      "${var.my_ip_address}/32"
-    ]
+    direction  = "in"
+    port       = "6443"
+    protocol   = "tcp"
+    source_ips = var.my_ip_addresses
   }
 }

@@ -31,17 +31,20 @@ terraform apply
 
 ## Variables reference
 
-| Name         | Purpose                                                            |
-| ------------ | ------------------------------------------------------------------ |
-| hcloud_token | The token to access the Hetzner Cloud API (must have write access) |
-| prefix_name  |                                                                    |
-|              |                                                                    |
-|              |                                                                    |
-|              |                                                                    |
-|              |                                                                    |
-|              |                                                                    |
-|              |                                                                    |
-|              |                                                                    |
+| Name                       | Purpose                                                                                                                           |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| hcloud_token               | The token to access the Hetzner Cloud API (must have write access)                                                                |
+| cluster_name               | Used for server names prefix, ${cluster_name}-controller-01, ${cluster_name}-worker-01, etc.                                      |
+| cluster_user               | The default non root user for ssh connection                                                                                      |
+| server_location            | At Nuremberg by default                                                                                                           |
+| volume_size                | The size of volume that will be mounted to data node, 10Gb by default                                                             |
+| my_public_ssh_name         |                                                                                                                                   |
+| my_public_ssh_key          |                                                                                                                                   |
+| my_ip_addresses            | IP addresses that will be whitelisted for SSH and Kubernetes API connection through Hetzner firewall, leave empty for free access |
+| my_cluster_domain          |                                                                                                                                   |
+| controller_ssh_key_name    |                                                                                                                                   |
+| controller_private_ssh_key |                                                                                                                                   |
+| controller_public_ssh_key  |                                                                                                                                   |
 
 ## Usage
 

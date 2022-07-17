@@ -1,12 +1,12 @@
 apiVersion: k0sctl.k0sproject.io/v1beta1
 kind: Cluster
 metadata:
-  name: ${prefix_name}-cluster
+  name: ${cluster_name}
 spec:
   hosts:
     - ssh:
         address: ${controller_ip}
-        user: ${sudo_user}
+        user: ${cluster_user}
         port: ${ssh_port}
         keyPath: ${private_ssh_key_path}
       role: controller+worker
@@ -16,7 +16,7 @@ spec:
 %{ for addr in ip_addrs ~}
     - ssh:
         address: ${addr}
-        user: ${sudo_user}
+        user: ${cluster_user}
         port: ${ssh_port}
         keyPath: ${private_ssh_key_path}
       role: worker

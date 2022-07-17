@@ -1,5 +1,5 @@
 resource "hcloud_server" "controller-01" {
-  name        = "${var.prefix_name}-controller-01"
+  name        = "${var.cluster_name}-controller-01"
   image       = "ubuntu-22.04"
   server_type = "cx21"
   location    = var.server_location
@@ -17,9 +17,9 @@ resource "hcloud_server" "controller-01" {
     hcloud_network_subnet.network-subnet
   ]
   user_data = templatefile("init_controller.tftpl", {
-    sudo_user                  = var.sudo_user
+    cluster_user               = var.cluster_user
     public_ssh_key             = var.my_public_ssh_key
-    prefix_name                = var.prefix_name
+    cluster_name               = var.cluster_name
     cluster_domain             = var.my_cluster_domain
     minion_id                  = "controller-01"
     controller_ssh_key_name    = var.controller_ssh_key_name
@@ -27,10 +27,10 @@ resource "hcloud_server" "controller-01" {
     controller_public_ssh_key  = var.controller_public_ssh_key
     k0sctl_file_content = base64encode(
       templatefile("k0sctl.tftpl", {
-        prefix_name          = var.prefix_name
+        cluster_name         = var.cluster_name
         controller_ip        = "10.0.0.2"
         cluster_domain       = var.my_cluster_domain
-        sudo_user            = var.sudo_user
+        cluster_user         = var.cluster_user
         ssh_port             = "2222"
         private_ssh_key_path = "~/.ssh/${var.controller_ssh_key_name}"
         private_interface    = "ens10"
@@ -45,7 +45,7 @@ resource "hcloud_server" "controller-01" {
 }
 
 resource "hcloud_server" "worker-01" {
-  name        = "${var.prefix_name}-worker-01"
+  name        = "${var.cluster_name}-worker-01"
   image       = "ubuntu-22.04"
   server_type = "cx21"
   location    = var.server_location
@@ -64,9 +64,9 @@ resource "hcloud_server" "worker-01" {
     hcloud_server.controller-01
   ]
   user_data = templatefile("init_worker.tftpl", {
-    sudo_user                 = var.sudo_user
+    cluster_user              = var.cluster_user
     public_ssh_key            = var.my_public_ssh_key
-    prefix_name               = var.prefix_name
+    cluster_name              = var.cluster_name
     cluster_domain            = var.my_cluster_domain
     minion_id                 = "worker-01"
     controller_public_ssh_key = var.controller_public_ssh_key
@@ -74,7 +74,7 @@ resource "hcloud_server" "worker-01" {
 }
 
 resource "hcloud_server" "worker-02" {
-  name        = "${var.prefix_name}-worker-02"
+  name        = "${var.cluster_name}-worker-02"
   image       = "ubuntu-22.04"
   server_type = "cx21"
   location    = var.server_location
@@ -93,9 +93,9 @@ resource "hcloud_server" "worker-02" {
     hcloud_server.controller-01
   ]
   user_data = templatefile("init_worker.tftpl", {
-    sudo_user                 = var.sudo_user
+    cluster_user              = var.cluster_user
     public_ssh_key            = var.my_public_ssh_key
-    prefix_name               = var.prefix_name
+    cluster_name              = var.cluster_name
     cluster_domain            = var.my_cluster_domain
     minion_id                 = "worker-02"
     controller_public_ssh_key = var.controller_public_ssh_key
@@ -103,7 +103,7 @@ resource "hcloud_server" "worker-02" {
 }
 
 resource "hcloud_server" "data-01" {
-  name        = "${var.prefix_name}-data-01"
+  name        = "${var.cluster_name}-data-01"
   image       = "ubuntu-22.04"
   server_type = "cx21"
   location    = var.server_location
@@ -122,9 +122,9 @@ resource "hcloud_server" "data-01" {
     hcloud_server.controller-01
   ]
   user_data = templatefile("init_worker.tftpl", {
-    sudo_user                 = var.sudo_user
+    cluster_user              = var.cluster_user
     public_ssh_key            = var.my_public_ssh_key
-    prefix_name               = var.prefix_name
+    cluster_name              = var.cluster_name
     cluster_domain            = var.my_cluster_domain
     minion_id                 = "data-01"
     controller_public_ssh_key = var.controller_public_ssh_key

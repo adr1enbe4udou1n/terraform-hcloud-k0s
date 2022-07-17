@@ -1,13 +1,19 @@
-variable "prefix_name" {
-  type        = string
-  default     = "kube"
-  description = "The prefix name of all servers hostnames"
-}
-
 variable "hcloud_token" {
   type        = string
   sensitive   = true
   description = "The token to access the Hetzner Cloud API (must have write access)"
+}
+
+variable "cluster_name" {
+  type        = string
+  default     = "kube"
+  description = "Will be used to create the hcloud servers as a hostname prefix and main cluster name for the k0s cluster"
+}
+
+variable "cluster_user" {
+  type        = string
+  default     = "kube"
+  description = "The default non-root user (UID=1000) that will be used to access the servers"
 }
 
 variable "server_location" {
@@ -34,20 +40,14 @@ variable "my_public_ssh_key" {
   description = "Your public SSH key that will be used to access the servers"
 }
 
-variable "my_ip_address" {
-  type        = string
-  description = "Your public IP address for port whitelist via the Hetzner Firewall configuration"
+variable "my_ip_addresses" {
+  type        = list(string)
+  description = "Your public IP addresses for port whitelist via the Hetzner firewall configuration"
 }
 
 variable "my_cluster_domain" {
   type        = string
   description = "Your main domain for cluster installation"
-}
-
-variable "sudo_user" {
-  type        = string
-  default     = "kube"
-  description = "The non-root user that will be used to access the servers"
 }
 
 variable "controller_ssh_key_name" {
