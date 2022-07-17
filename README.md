@@ -2,13 +2,17 @@
 
 ## :dart: About ##
 
-Terraform project for generating a ready to go secured based cloud infrastructure through Hetzner Cloud provider, with a ready-to-install [K0S](https://k0sproject.io/), a zero-friction Kubernetes distribution. The cluster will be composed of 4 servers :
+Get a cheap but powerful Kubernetes instance in less than 5 minutes !
+
+This Terraform project will generate a ready to go secured based cloud infrastructure through Hetzner Cloud provider, with a ready-to-install [K0S](https://k0sproject.io/), a zero-friction Kubernetes distribution. By default, the cluster will be composed of 4 **CX21** servers :
 
 1. A main control pane server
 2. 2 worker nodes
-3. 1 data node for DB specific tasks
+3. 1 data node for DB specific tasks with a separate volume (10 GB by default)
 
-Feel free to add some additional nodes inside `servers.tf` file.
+Total price : 5.88*4+0.48 = **24$** / month
+
+Feel free to fork this project in order to adapt for your custom needs, with less or additional nodes, etc. This is just a startup sample template.
 
 This Terraform template includes [Salt Project](https://docs.saltproject.io) as well for easy global cluster management, perfect for upgrades in one single time !
 
@@ -20,10 +24,9 @@ Before continue, **DO NOT** reuse any existing project as we'll use terraform ! 
 
 ## :checkered_flag: Starting ##
 
-```bash
-# Clone this project
-$ git clone https://github.com/adr1enbe4udou1n/terraform-hetzner-kube-sample
+After clone or download this project :
 
+```bash
 # Prepare variables, cf bellow for list
 cp terraform.tfvars.example terraform.tfvars
 
@@ -63,11 +66,21 @@ Finally, use `ssh <cluster_name>-cp` in order to log in to your main control pan
 
 In order to active `Salt`, just type `sudo salt-key -A` in order to accept all minions. You are now ready for using `sudo salt '*' pkg.upgrade` from main control pane in order to upgrade all nodes in one single time.
 
-### K0S install
+### K0S
+
+#### Install
 
 Once successfully logged, note the `k0sctl.yaml` file automatically generated in your home directory. You're now finally ready to install your Kubernetes cluster by simply launching `k0sctl apply` !
 
-After successfully install, you should have access to your shiny new K8S instance. Type `sudo k0s kubectl get nodes -o wide` to check node status and be sure all nodes is ready and have proper private IPs.
+> If you get any random error, try again, k0sctl is not 100% reliable... Be sure to have SSH access to other nodes with `ssh data-01 -p2222 -i .ssh/id_cluster`
+
+After successfully install, you should have access to your shiny new K0S instance. Type `sudo k0s kubectl get nodes -o wide` to check node status and be sure all nodes is ready and have proper private IPs.
+
+#### Remote access
+
+In order to connect remotely to your K0S cluster, use `k0sctl kubeconfig` in order to print all token connection and merge it to your local kubectl client (default to `~/.kube/config`).
+
+> I highly encourage you to use <https://github.com/shanoor/kubectl-aliases-powershell> (bash) or <https://github.com/ahmetb/kubectl-aliases> (PS) for better CLI experience.
 
 ## :memo: License ##
 
