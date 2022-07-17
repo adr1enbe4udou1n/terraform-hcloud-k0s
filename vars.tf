@@ -16,6 +16,11 @@ variable "cluster_user" {
   description = "The default non-root user (UID=1000) that will be used to access the servers"
 }
 
+variable "cluster_fqdn" {
+  type        = string
+  description = "Your main domain for cluster installation"
+}
+
 variable "server_location" {
   type        = string
   default     = "nbg1"
@@ -41,18 +46,12 @@ variable "my_public_ssh_key" {
 }
 
 variable "my_ip_addresses" {
-  type        = list(string)
+  type = list(string)
+  default = [
+    "0.0.0.0/0",
+    "::/0"
+  ]
   description = "Your public IP addresses for port whitelist via the Hetzner firewall configuration"
-}
-
-variable "my_cluster_domain" {
-  type        = string
-  description = "Your main domain for cluster installation"
-}
-
-variable "controller_ssh_key_name" {
-  type        = string
-  description = "The filename of ssh keys for the controller server"
 }
 
 variable "controller_private_ssh_key" {
@@ -65,4 +64,9 @@ variable "controller_public_ssh_key" {
   type        = string
   sensitive   = true
   description = "The public key of the controller server"
+}
+
+variable "controller_ssh_key_filename" {
+  type        = string
+  description = "The filename of ssh keys for the controller server"
 }

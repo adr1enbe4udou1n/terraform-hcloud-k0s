@@ -17,7 +17,7 @@ manage_etc_hosts: false
 write_files:
   - path: /etc/hosts
     content: |
-      10.0.0.2 ${cluster_name} ${cluster_domain}
+      10.0.0.2 ${cluster_name} ${cluster_fqdn}
     append: true
 
 runcmd:

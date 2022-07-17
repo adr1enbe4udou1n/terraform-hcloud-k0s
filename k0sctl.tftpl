@@ -29,9 +29,9 @@ spec:
     config:
       spec:
         api:
-          externalAddress: ${cluster_domain}
+          externalAddress: ${cluster_fqdn}
           sans:
-            - ${cluster_domain}
+            - ${cluster_fqdn}
         storage:
           etcd:
             peerAddress: ${controller_ip}
