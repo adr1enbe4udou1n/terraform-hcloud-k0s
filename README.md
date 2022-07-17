@@ -10,11 +10,21 @@ This Terraform template will generate a ready to go secured based cloud infrastr
 2. 2 worker nodes
 3. 1 data node for DB specific tasks with a separate volume (10 GB by default)
 
-Total price : 5.88*4+0.48 = **24$** / month
+Total price : 5.88*4+0.48 = **$24** / month
 
 Feel free to fork this project in order to adapt for your custom needs, with less or additional nodes, etc. This is just a startup sample template.
 
 This Terraform template includes [Salt Project](https://docs.saltproject.io) as well for easy global cluster management, perfect for upgrades in one single time !
+
+### Networking and firewall
+
+All nodes will be linked with a proper private network as well as solid firewall protection. Only control pane node will have open ports. Other internal nodes will be accessed by SSH Jump.
+
+The public firewall has 3 public ports for any services that you'll install in your K0S cluster, which are **22**, **80** and **443** (22 is useful for any services which needs SSH connection as Gitlab or any other VCS for project cloning).
+
+The SSH connection will be made by port **2222** and Kubernetes API by port **6443**. Both admin ports can have IP whitelist.
+
+> Note as the Hetzner Load Balancer is not used here in order to keep price low. So your control pane will be your main SPF if it's acceptable for you.
 
 ## :white_check_mark: Requirements ##
 
@@ -52,7 +62,7 @@ terraform apply
 
 Use the command `ssh-keygen -t ed25519 -f "cluster-key" -qN ""` for quick generation and put both content of private `cluster-key` and public `cluster-key.pub` keys into above respective `controller_private_ssh_key` and `controller_public_ssh_key` variables.
 
-You can legitimately think that the private SSH key through TF variable is unsecure, and you'll be right. But this is only intended for internal controller-to-worker access through private network, and cannot be used outside. All internal servers behind the main control pane node will be entirely blocked by the Hetzner firewall. If we need access to this internal nodes, we'll simply use the Jump SSH feature, and use controller node as bastion.
+> You can legitimately think that the private SSH key through TF variable is unsecure, and you'll be right. But this is only intended for internal controller-to-worker access through private network, and cannot be used outside. All internal servers behind the main control pane node will be entirely blocked by the Hetzner firewall. If we need access to this internal nodes, we'll simply use the Jump SSH feature, and use controller node as bastion.
 
 ## Usage
 
