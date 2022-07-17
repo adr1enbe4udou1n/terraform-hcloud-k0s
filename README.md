@@ -4,7 +4,7 @@
 
 Get a cheap but powerful Kubernetes instance in less than 5 minutes !
 
-This Terraform project will generate a ready to go secured based cloud infrastructure through Hetzner Cloud provider, with a ready-to-install [K0S](https://k0sproject.io/), a zero-friction Kubernetes distribution. By default, the cluster will be composed of 4 **CX21** servers :
+This Terraform template will generate a ready to go secured based cloud infrastructure through Hetzner Cloud provider, with a ready-to-install [K0S](https://k0sproject.io/), a zero-friction Kubernetes distribution. By default, the cluster will be composed of 4 **CX21** servers :
 
 1. A main control pane server
 2. 2 worker nodes
@@ -24,7 +24,7 @@ Before continue, **DO NOT** reuse any existing project as we'll use terraform ! 
 
 ## :checkered_flag: Starting ##
 
-After clone or download this project :
+After creating your repo from this template and cloned it locally :
 
 ```bash
 # Prepare variables, cf bellow for list
