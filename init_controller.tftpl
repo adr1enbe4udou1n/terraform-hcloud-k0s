@@ -21,12 +21,12 @@ write_files:
       10.0.0.4 ${cluster_name}-worker-02
       10.0.0.5 ${cluster_name}-data-01
     append: true
-  - path: /${controller_ssh_key_filename}
+  - path: /id_cluster
     encoding: b64
     permissions: "0600"
     content: |
       ${controller_private_ssh_key}
-  - path: /${controller_ssh_key_filename}.pub
+  - path: /id_cluster.pub
     permissions: "0644"
     content: |
       ${controller_public_ssh_key}
@@ -46,5 +46,5 @@ runcmd:
   - wget https://github.com/k0sproject/k0sctl/releases/download/v0.13.1/k0sctl-linux-x64
   - chmod +x k0sctl-linux-x64
   - mv k0sctl-linux-x64 /usr/local/bin/k0sctl
-  - chown ${cluster_user}:${cluster_user} /${controller_ssh_key_filename}* && mv /${controller_ssh_key_filename}* /home/${cluster_user}/.ssh
+  - chown ${cluster_user}:${cluster_user} /id_cluster* && mv /id_cluster* /home/${cluster_user}/.ssh
   - chown ${cluster_user}:${cluster_user} /k0sctl.yaml && mv /k0sctl.yaml /home/${cluster_user}

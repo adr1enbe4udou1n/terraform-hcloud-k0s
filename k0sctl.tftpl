@@ -4,11 +4,8 @@ metadata:
   name: ${cluster_name}
 spec:
   hosts:
-    - ssh:
-        address: ${controller_ip}
-        user: ${cluster_user}
-        port: ${ssh_port}
-        keyPath: ${private_ssh_key_path}
+    - localhost:
+        enabled: true
       role: controller+worker
       privateInterface: ${private_interface}
       installFlags:

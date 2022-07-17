@@ -65,8 +65,3 @@ variable "controller_public_ssh_key" {
   sensitive   = true
   description = "The public key of the controller server"
 }
-
-variable "controller_ssh_key_filename" {
-  type        = string
-  description = "The filename of ssh keys for the controller server"
-}

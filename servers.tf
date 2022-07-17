@@ -17,14 +17,13 @@ resource "hcloud_server" "controller-01" {
     hcloud_network_subnet.network-subnet
   ]
   user_data = templatefile("init_controller.tftpl", {
-    cluster_name                = var.cluster_name
-    cluster_user                = var.cluster_user
-    cluster_fqdn                = var.cluster_fqdn
-    public_ssh_key              = var.my_public_ssh_key
-    minion_id                   = "controller-01"
-    controller_ssh_key_filename = var.controller_ssh_key_filename
-    controller_private_ssh_key  = base64encode(var.controller_private_ssh_key)
-    controller_public_ssh_key   = var.controller_public_ssh_key
+    cluster_name               = var.cluster_name
+    cluster_user               = var.cluster_user
+    cluster_fqdn               = var.cluster_fqdn
+    public_ssh_key             = var.my_public_ssh_key
+    minion_id                  = "controller-01"
+    controller_private_ssh_key = base64encode(var.controller_private_ssh_key)
+    controller_public_ssh_key  = var.controller_public_ssh_key
     k0sctl_file_content = base64encode(
       templatefile("k0sctl.tftpl", {
         cluster_name         = var.cluster_name
@@ -32,7 +31,7 @@ resource "hcloud_server" "controller-01" {
         cluster_fqdn         = var.cluster_fqdn
         controller_ip        = "10.0.0.2"
         ssh_port             = "2222"
-        private_ssh_key_path = "~/.ssh/${var.controller_ssh_key_filename}"
+        private_ssh_key_path = "~/.ssh/id_cluster"
         private_interface    = "ens10"
         ip_addrs = [
           "10.0.0.3",

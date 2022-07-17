@@ -31,24 +31,23 @@ terraform apply
 
 ## Variables reference
 
-| Name                        | Purpose                                                                                                                                                                                                |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| hcloud_token                | The token to access the Hetzner Cloud API (must have write access)                                                                                                                                     |
-| cluster_name                | Used for server names prefix, ${cluster_name}-controller-01, ${cluster_name}-worker-01, etc.                                                                                                           |
-| cluster_user                | The default non root user for ssh connection                                                                                                                                                           |
-| cluster_fqdn                | User for main cluster FQDN access through Kubernetes API endpoint. This domain must be created on your own registrar and point towards the main controller IP                                          |
-| server_location             | At Nuremberg by default                                                                                                                                                                                |
-| volume_size                 | The size of volume that will be mounted to data node, 10Gb by default                                                                                                                                  |
-| my_public_ssh_name          | Name of default Hetzner ssh key                                                                                                                                                                        |
-| my_public_ssh_key           | Your public SSH key for remote access to your nodes                                                                                                                                                    |
-| my_ip_addresses             | IP addresses that will be whitelisted for SSH and Kubernetes API connection through Hetzner firewall. IP format must have full format with proper mask, e.i. x.x.x.x/32. Leave default for free access |
-| controller_private_ssh_key  | The private key of main controller server, required for k0sctl install                                                                                                                                 |
-| controller_public_ssh_key   | The public key of main controller server                                                                                                                                                               |
-| controller_ssh_key_filename | Filename of controller SSH private and public keys                                                                                                                                                     |
+| Name                       | Purpose                                                                                                                                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| hcloud_token               | The token to access the Hetzner Cloud API (must have write access)                                                                                                                                     |
+| cluster_name               | Used for server names prefix, ${cluster_name}-controller-01, ${cluster_name}-worker-01, etc.                                                                                                           |
+| cluster_user               | The default non root user for ssh connection                                                                                                                                                           |
+| cluster_fqdn               | User for main cluster FQDN access through Kubernetes API endpoint. This domain must be created on your own registrar and point towards the main controller IP                                          |
+| server_location            | At Nuremberg by default                                                                                                                                                                                |
+| volume_size                | The size of volume that will be mounted to data node, 10Gb by default                                                                                                                                  |
+| my_public_ssh_name         | Name of default Hetzner ssh key                                                                                                                                                                        |
+| my_public_ssh_key          | Your public SSH key for remote access to your nodes                                                                                                                                                    |
+| my_ip_addresses            | IP addresses that will be whitelisted for SSH and Kubernetes API connection through Hetzner firewall. IP format must have full format with proper mask, e.i. x.x.x.x/32. Leave default for free access |
+| controller_private_ssh_key | The private key of main controller server, required for k0sctl install                                                                                                                                 |
+| controller_public_ssh_key  | The public key of main controller server                                                                                                                                                               |
 
-Use the command `ssh-keygen -t ed25519 -f "cluster-key" -qN ""` for quick generation and put private `cluster-key` and public `cluster-key.pub` keys file content into above respective `controller_private_ssh_key` and `controller_public_ssh_key` variables.
+Use the command `ssh-keygen -t ed25519 -f "cluster-key" -qN ""` for quick generation and put both content of private `cluster-key` and public `cluster-key.pub` keys into above respective `controller_private_ssh_key` and `controller_public_ssh_key` variables.
 
-You can legitimately think that the private SSH key through variables is unsecure and you'll be right. But this key will be used only for internal node-to-node access through private network, and cannot be used outside. All internal server behind the control pane node will be entirely blocked by the firewall.
+You can legitimately think that the private SSH key through TF variable is unsecure, and you'll be right. But this is only intended for internal controller-to-worker access through private network, and cannot be used outside. All internal servers behind the main control pane node will be entirely blocked by the Hetzner firewall. If we need access to this internal nodes, we'll simply use the Jump SSH feature, and use controller node as bastion.
 
 ## Usage
 

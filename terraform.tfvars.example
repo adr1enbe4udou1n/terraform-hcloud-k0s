@@ -13,4 +13,3 @@ controller_private_ssh_key  = <<EOF
 -----END OPENSSH PRIVATE KEY-----
 EOF
 controller_public_ssh_key   = ""
-controller_ssh_key_filename = "id_ed25519"
