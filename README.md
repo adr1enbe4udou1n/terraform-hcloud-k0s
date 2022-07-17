@@ -12,7 +12,7 @@ Feel free to add some additional nodes inside `servers.tf` file.
 
 ## :white_check_mark: Requirements ##
 
-Before starting :checkered_flag:, you need to have a Hetzner cloud account as well as the `terraform` client. On Windows, this is a simple `scoop install terraform`.
+Before starting :checkered_flag:, you need to have a Hetzner cloud account as well as the `terraform` client. On Windows, this is a simple `scoop install terraform`. A valid custom domain on any registrar with access to his DNS is also recommended for easy access.
 
 Before continue, **DO NOT** reuse any existing project as we'll use terraform ! Create a new empty hcloud empty project with a valid Read/Write API token key.
 
@@ -51,8 +51,13 @@ You can legitimately think that the private SSH key through TF variable is unsec
 
 ## Usage
 
-TODO SSH Config
-TODO Kube Cluster install
+Before continue, go to your registrar and create new DNS entry with above `cluster_fqdn` and point it to the public IP of the main control pane node server.
+
+Once terraform installation is complete, terraform will output all the SSH config necessary to connect to your cluster (TODO). Simply integrate it to your own SSH config then use `ssh kdcp` in order to login to your main control pane node. For other nodes, the control pane node will be used as a bastion for direct access to other nodes, so you can use `ssh kdw1` to directly access to your worker-01 node.
+
+Once successfully logged, note the `k0sctl.yaml` file automatically generated in your home directory. You're now finally ready to install your kubernetes cluster by simply launching `k0sctl apply` !
+
+After successfully install, you should have access to your shiny new K8S instance. Type `sudo k0s kubectl get nodes -o wide` to check node status and be sure all nodes is ready and have proper private IPs.
 
 ## :memo: License ##
 
