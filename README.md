@@ -1,5 +1,7 @@
 # Terraform K0S Hetzner Installer
 
+This is a **:wip:**
+
 ## :dart: About ##
 
 Terraform project for generating a ready to go secured based cloud infrastructure through Hetzner Cloud provider, with a ready-to-install [K0S](https://k0sproject.io/), a zero-friction Kubernetes distribution. The cluster will be composed of 4 servers :
