@@ -57,7 +57,7 @@ Once terraform installation is complete, terraform will output the public IP mai
 
 Go to your registrar and create new DNS entry named as above `cluster_fqdn` and point it to the printed public IP. Then integrate the SSH config to your own SSH config.
 
-Finally, use `ssh kdcp` in order to log in to your main control pane node. For other nodes, the control pane node will be used as a bastion for direct access to other nodes, so you can use `ssh kdw1` to directly access to your worker-01 node.
+Finally, use `ssh <cluster_name>-cp` in order to log in to your main control pane node. For other nodes, the control pane node will be used as a bastion for direct access to other nodes, so you can use `ssh <cluster_name>-w1` to directly access to your worker-01 node.
 
 Once successfully logged, note the `k0sctl.yaml` file automatically generated in your home directory. You're now finally ready to install your Kubernetes cluster by simply launching `k0sctl apply` !
 

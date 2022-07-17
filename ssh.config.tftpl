@@ -1,21 +1,21 @@
-Host kdcp
+Host ${cluster_name}-cp
     HostName ${cluster_fqdn}
     User ${cluster_user}
     Port 2222
 
-Host kdw1
+Host ${cluster_name}-w1
     HostName ${cluster_name}-worker-01
     User ${cluster_user}
     Port 2222
     ProxyJump kdcp
 
-Host kdw2
+Host ${cluster_name}-w2
     HostName ${cluster_name}-worker-02
     User ${cluster_user}
     Port 2222
     ProxyJump kdcp
 
-Host kdd1
+Host ${cluster_name}-d1
     HostName ${cluster_name}-data-01
     User ${cluster_user}
     Port 2222
