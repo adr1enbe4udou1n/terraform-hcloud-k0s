@@ -17,8 +17,8 @@ write_files:
   - path: /etc/hosts
     content: |
       10.0.0.2 ${cluster_name} ${cluster_fqdn}
-%{ for name, worker in workers ~}
-      ${worker.ip} ${name} ${cluster_name}-${name}
+%{ for w in workers ~}
+      ${w.ip} ${w.name} ${cluster_name}-${w.name}
 %{ endfor ~}
     append: true
   - path: /id_cluster
