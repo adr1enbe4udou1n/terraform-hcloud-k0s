@@ -53,12 +53,13 @@ terraform apply
 | cluster_user               | The default non root user for ssh connection                                                                                                                                                           |
 | cluster_fqdn               | User for main cluster FQDN access through Kubernetes API endpoint. This domain must be created on your own registrar and point towards the main controller IP                                          |
 | server_location            | At Nuremberg by default                                                                                                                                                                                |
-| volume_size                | The size of volume that will be mounted to data node, 10Gb by default                                                                                                                                  |
 | my_public_ssh_name         | Name of default Hetzner ssh key                                                                                                                                                                        |
 | my_public_ssh_key          | Your public SSH key for remote access to your nodes                                                                                                                                                    |
 | my_ip_addresses            | IP addresses that will be whitelisted for SSH and Kubernetes API connection through Hetzner firewall. IP format must have full format with proper mask, e.i. x.x.x.x/32. Leave default for free access |
 | controller_private_ssh_key | The private key of main controller server, required for k0sctl install                                                                                                                                 |
 | controller_public_ssh_key  | The public key of main controller server                                                                                                                                                               |
+| workers                    | List of all nodes to create for K0S cluster. The k0sctl will be updated as well                                                                                                                        |
+| volumes                    | List of additional volumes to attach to above workers                                                                                                                                                  |
 
 Use the command `ssh-keygen -t ed25519 -f "cluster-key" -qN ""` for quick generation and put both content of private `cluster-key` and public `cluster-key.pub` keys into above respective `controller_private_ssh_key` and `controller_public_ssh_key` variables.
 
