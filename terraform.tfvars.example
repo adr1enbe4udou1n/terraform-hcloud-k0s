@@ -13,3 +13,27 @@ controller_private_ssh_key  = <<EOF
 -----END OPENSSH PRIVATE KEY-----
 EOF
 controller_public_ssh_key   = ""
+workers = [
+  {
+    name       = "worker-01"
+    short_name = "w1"
+    ip         = "10.0.0.3"
+  },
+  {
+    name       = "worker-02"
+    short_name = "w2"
+    ip         = "10.0.0.4"
+  },
+  {
+    name       = "data-01"
+    short_name = "d1"
+    ip         = "10.0.0.5"
+  }
+]
+volumes = [
+  {
+    name         = "volume-01"
+    server_index = 2,
+    size         = 10,
+  }
+]

@@ -3,20 +3,11 @@ Host ${cluster_name}-cp
     User ${cluster_user}
     Port 2222
 
-Host ${cluster_name}-w1
-    HostName ${cluster_name}-worker-01
+%{ for name, server in servers ~}
+Host ${cluster_name}-${server.short_name}
+    HostName ${cluster_name}
     User ${cluster_user}
     Port 2222
     ProxyJump ${cluster_name}-cp
 
-Host ${cluster_name}-w2
-    HostName ${cluster_name}-worker-02
-    User ${cluster_user}
-    Port 2222
-    ProxyJump ${cluster_name}-cp
-
-Host ${cluster_name}-d1
-    HostName ${cluster_name}-data-01
-    User ${cluster_user}
-    Port 2222
-    ProxyJump ${cluster_name}-cp
+%{ endfor ~}

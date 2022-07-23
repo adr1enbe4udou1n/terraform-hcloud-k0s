@@ -27,12 +27,6 @@ variable "server_location" {
   description = "The default location to create hcloud servers"
 }
 
-variable "volume_size" {
-  type        = number
-  default     = 10
-  description = "The volume size of hcloud volume dedicated for the data server node"
-}
-
 variable "my_public_ssh_name" {
   type        = string
   default     = "kube"
@@ -64,4 +58,22 @@ variable "controller_public_ssh_key" {
   type        = string
   sensitive   = true
   description = "The public key of the controller server"
+}
+
+variable "workers" {
+  type = list(object({
+    name       = string
+    short_name = string
+    ip         = string
+  }))
+  description = "List of workers"
+}
+
+variable "volumes" {
+  type = list(object({
+    name         = string,
+    server_index = number,
+    size         = number,
+  }))
+  description = "List of volumes to be attached to servers"
 }

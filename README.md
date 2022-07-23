@@ -12,7 +12,7 @@ This Terraform template will generate a ready to go secured based cloud infrastr
 
 Total price : 5.88*4+0.48 = **$24** / month
 
-Feel free to fork this project in order to adapt for your custom needs, with less or additional nodes, etc. This is just a startup sample template.
+Additional nodes can be easily added according `workers` terraform variable, cf below. Feel free to fork this project in order to adapt for your custom needs.
 
 This Terraform template includes [Salt Project](https://docs.saltproject.io) as well for easy global cluster management, perfect for upgrades in one single time !
 
