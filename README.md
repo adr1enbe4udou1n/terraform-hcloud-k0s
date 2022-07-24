@@ -14,7 +14,7 @@ Total price : 5.88*4+0.48 = **$24** / month
 
 Additional nodes can be easily added according `workers` terraform variable, cf below. Feel free to fork this project in order to adapt for your custom needs.
 
-This Terraform template includes [Salt Project](https://docs.saltproject.io) as well for easy global cluster management, perfect for upgrades in one single time !
+This Terraform template includes [Salt Project](https://docs.saltproject.io) as well for easy global cluster management, perfect for upgrades in one single time ! The NFS client is also installed by default for any usage through remote NFS server for stateful workloads.
 
 ### Networking and firewall
 
