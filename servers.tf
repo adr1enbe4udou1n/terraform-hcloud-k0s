@@ -1,4 +1,4 @@
-resource "hcloud_server" "controller_01" {
+resource "hcloud_server" "cp" {
   name        = "${var.cluster_name}-controller-01"
   image       = "ubuntu-22.04"
   server_type = "cx21"
@@ -40,7 +40,7 @@ resource "hcloud_server" "controller_01" {
 }
 
 resource "hcloud_server" "workers" {
-  for_each    = { for i, worker in var.workers : i => worker }
+  for_each    = var.workers
   name        = "${var.cluster_name}-${each.value.name}"
   image       = "ubuntu-22.04"
   server_type = "cx21"
@@ -69,10 +69,10 @@ resource "hcloud_server" "workers" {
 }
 
 resource "hcloud_volume" "volumes" {
-  for_each  = { for i, volume in var.volumes : i => volume }
+  for_each  = var.volumes
   name      = each.value.name
   size      = each.value.size
-  server_id = hcloud_server.workers[each.value.server_index].id
+  server_id = hcloud_server.workers[each.value.server].id
   automount = true
   format    = "ext4"
 }

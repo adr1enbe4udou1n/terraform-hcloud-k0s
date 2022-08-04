@@ -1,6 +1,11 @@
-output "public_ip" {
-  value       = hcloud_server.controller_01.ipv4_address
-  description = "Value of the public ip address of the cluster, use this IP for your new domain, aka cluster_fqdn"
+output "cluster_ip" {
+  value       = hcloud_server.cp.ipv4_address
+  description = "Public ip address of the control pane, link this IP to your cluster_fqdn"
+}
+
+output "lb_ip" {
+  value       = hcloud_load_balancer.lb.ipv4
+  description = "Public ip address of the load balancer, use this IP as main HTTPS entrypoint through your worker nodes"
 }
 
 output "ssh_config" {

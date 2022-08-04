@@ -2,15 +2,15 @@
 
 ## :dart: About ##
 
-Get a cheap but powerful Kubernetes instance in less than 5 minutes !
+Get a cheap but powerful HA-ready Kubernetes cluster in less than 5 minutes !
 
-This Terraform template will generate a ready to go secured based cloud infrastructure through Hetzner Cloud provider, with a ready-to-install [K0S](https://k0sproject.io/), a zero-friction Kubernetes distribution. By default, the cluster will be composed of 4 **CX21** servers :
+This Terraform template will generate a ready to go secured based cloud infrastructure through Hetzner Cloud provider, with a ready-to-install [K0S](https://k0sproject.io/), a zero-friction Kubernetes distribution. By default, the cluster will be composed of **dedicated LB** as well as 5 **CX21** servers :
 
-1. A main control pane server
-2. 2 worker nodes
-3. 1 data node for DB specific tasks with a separate volume (10 GB by default)
+1. 1 main control pane server for K0S management
+2. 2 worker nodes linked to the load balancer for HA
+3. 2 data nodes for any Data/DB specific tasks with a mounted extensible volume for each (20 GB by default)
 
-Total price : 5.88*4+0.48 = **$24** / month
+Total price : 5.88 \* 6 + 0.96 \* 2 = **$37,20** / month
 
 Additional nodes can be easily added according `workers` terraform variable, cf below. Feel free to fork this project in order to adapt for your custom needs.
 
@@ -20,11 +20,7 @@ This Terraform template includes [Salt Project](https://docs.saltproject.io) as 
 
 All nodes will be linked with a proper private network as well as solid firewall protection. Only control pane node will have open ports. Other internal nodes will be accessed by SSH Jump.
 
-The public firewall has 3 public ports for any services that you'll install in your K0S cluster, which are **22**, **80** and **443** (22 is useful for any services which needs SSH connection as Gitlab or any other VCS for project cloning).
-
-The SSH connection will be made by port **2222** and Kubernetes API by port **6443**. Both admin ports can have IP whitelist.
-
-> Note as the Hetzner Load Balancer is not used here in order to keep price low. So your control pane will be your main SPF if it's acceptable for you.
+The SSH connection will be made by port **2222** and Kubernetes API by port **6443**. Both ports can have IP whitelist.
 
 ## :white_check_mark: Requirements ##
 
@@ -49,9 +45,10 @@ terraform apply
 | Name                       | Purpose                                                                                                                                                                                                |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | hcloud_token               | The token to access the Hetzner Cloud API (must have write access)                                                                                                                                     |
-| cluster_name               | Used for server names prefix, ${cluster_name}-controller-01, ${cluster_name}-worker-01, etc.                                                                                                           |
+| cluster_name               | Used for server names prefix, <cluster_name>-controller-01, <cluster_name>-worker-01, etc.                                                                                                             |
 | cluster_user               | The default non root user for ssh connection                                                                                                                                                           |
 | cluster_fqdn               | User for main cluster FQDN access through Kubernetes API endpoint. This domain must be created on your own registrar and point towards the main controller IP                                          |
+| domain_names               | Any domains for load balancer with valid Let's Encrypt certificates, wildcard domains are supported                                                                                                    |
 | server_location            | At Nuremberg by default                                                                                                                                                                                |
 | my_public_ssh_name         | Name of default Hetzner ssh key                                                                                                                                                                        |
 | my_public_ssh_key          | Your public SSH key for remote access to your nodes                                                                                                                                                    |
@@ -60,6 +57,7 @@ terraform apply
 | controller_public_ssh_key  | The public key of main controller server                                                                                                                                                               |
 | workers                    | List of all nodes to create for K0S cluster. The k0sctl will be updated as well                                                                                                                        |
 | volumes                    | List of additional volumes to attach to above workers                                                                                                                                                  |
+| lb_targets                 | List of workers to be load balanced                                                                                                                                                                    |
 
 Use the command `ssh-keygen -t ed25519 -f "cluster-key" -qN ""` for quick generation and put both content of private `cluster-key` and public `cluster-key.pub` keys into above respective `controller_private_ssh_key` and `controller_public_ssh_key` variables.
 
@@ -69,7 +67,7 @@ Use the command `ssh-keygen -t ed25519 -f "cluster-key" -qN ""` for quick genera
 
 Once terraform installation is complete, terraform will output the public IP main IP of the cluster as well as the SSH config necessary to connect to your cluster.
 
-Go to your registrar and create new DNS entry named as above `cluster_fqdn` and point it to the printed public IP. Then integrate the SSH config to your own SSH config.
+Go to your registrar and edit DNS entry named as above `cluster_fqdn` and point it to the printed public IP. Then integrate the SSH config to your own SSH config.
 
 Finally, use `ssh <cluster_name>-cp` in order to log in to your main control pane node. For other nodes, the control pane node will be used as a bastion for direct access to other nodes, so you can use `ssh <cluster_name>-w1` to directly access to your worker-01 node.
 

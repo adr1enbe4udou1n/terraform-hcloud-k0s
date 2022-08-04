@@ -19,11 +19,12 @@ resource "hcloud_load_balancer" "lb" {
 resource "hcloud_load_balancer_network" "lb_network" {
   load_balancer_id = hcloud_load_balancer.lb.id
   network_id       = hcloud_network.network.id
+  ip               = "10.0.0.3"
 }
 
 resource "hcloud_managed_certificate" "managed_cert" {
   name         = "managed_cert"
-  domain_names = [var.cluster_fqdn]
+  domain_names = var.domain_names
 }
 
 resource "hcloud_load_balancer_service" "lb_service_https" {
@@ -43,7 +44,7 @@ resource "hcloud_load_balancer_service" "lb_service_ssh" {
 }
 
 resource "hcloud_load_balancer_target" "lb_target" {
-  for_each         = { for i, worker_index in var.lb : i => worker_index }
+  for_each         = var.lb_targets
   type             = "server"
   load_balancer_id = hcloud_load_balancer.lb.id
   server_id        = hcloud_server.workers[each.value].id

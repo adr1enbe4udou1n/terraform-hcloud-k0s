@@ -1,7 +1,8 @@
 hcloud_token                = ""
 cluster_name                = "kube"
 cluster_user                = "kube"
-cluster_fqdn                = "kubedemo.example.org"
+cluster_fqdn                = "kube.example.org"
+domain_names                = ["*.example.org", "example.org"]
 server_location             = "nbg1"
 volume_size                 = 10
 my_public_ssh_name          = "kube"
@@ -13,43 +14,34 @@ controller_private_ssh_key  = <<EOF
 -----END OPENSSH PRIVATE KEY-----
 EOF
 controller_public_ssh_key   = ""
-workers = [
-  {
-    name       = "worker-01"
-    short_name = "w1"
-    ip         = "10.0.0.3"
+workers = {
+  w1 = {
+    name = "worker-01"
+    ip   = "10.0.0.4"
   },
-  {
-    name       = "worker-02"
-    short_name = "w2"
-    ip         = "10.0.0.4"
+  w2 = {
+    name = "worker-02"
+    ip   = "10.0.0.5"
   },
-  {
-    name       = "data-01"
-    short_name = "d1"
-    ip         = "10.0.0.5"
+  d1 = {
+    name = "data-01"
+    ip   = "10.0.0.6"
   },
-  {
-    name       = "data-02"
-    short_name = "d2"
-    ip         = "10.0.0.6"
-  },
-  {
-    name       = "runner-01"
-    short_name = "r1"
-    ip         = "10.0.0.7"
+  d2 = {
+    name = "data-02"
+    ip   = "10.0.0.7"
   }
-]
-volumes = [
-  {
-    name         = "volume-01"
-    server_index = 2,
-    size         = 10,
-  },
-  {
-    name         = "volume-02"
-    server_index = 3,
-    size         = 10,
+}
+volumes = {
+  vol1 = {
+    name   = "volume-01"
+    server = "d1"
+    size   = 20
   }
-]
-lb = [0, 1]
+  vol2 = {
+    name   = "volume-02"
+    server = "d2"
+    size   = 20
+  }
+}
+lb_targets = ["w1", "w2"]

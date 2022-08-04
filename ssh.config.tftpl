@@ -3,8 +3,8 @@ Host ${cluster_name}-cp
     User ${cluster_user}
     Port 2222
 
-%{ for s in servers ~}
-Host ${cluster_name}-${s.short_name}
+%{ for key, s in servers ~}
+Host ${cluster_name}-${key}
     HostName ${cluster_name}-${s.name}
     User ${cluster_user}
     Port 2222

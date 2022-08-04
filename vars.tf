@@ -18,7 +18,12 @@ variable "cluster_user" {
 
 variable "cluster_fqdn" {
   type        = string
-  description = "Your main domain for cluster installation"
+  description = "Your main domain for cluster access"
+}
+
+variable "domain_names" {
+  type        = list(string)
+  description = "Any domains for load balancer with valid Let's Encrypt certificates, wildcard domains are supported"
 }
 
 variable "server_location" {
@@ -61,24 +66,23 @@ variable "controller_public_ssh_key" {
 }
 
 variable "workers" {
-  type = list(object({
-    name       = string
-    short_name = string
-    ip         = string
+  type = map(object({
+    name = string
+    ip   = string
   }))
   description = "List of workers"
 }
 
 variable "volumes" {
-  type = list(object({
-    name         = string,
-    server_index = number,
-    size         = number,
+  type = map(object({
+    name   = string,
+    server = string,
+    size   = number,
   }))
   description = "List of volumes to be attached to servers"
 }
 
-variable "lb" {
-  type        = list(number)
+variable "lb_targets" {
+  type        = set(string)
   description = "List of workers to be load balanced"
 }
