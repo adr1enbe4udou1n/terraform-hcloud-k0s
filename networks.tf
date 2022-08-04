@@ -48,6 +48,7 @@ resource "hcloud_load_balancer_target" "lb_target" {
   type             = "server"
   load_balancer_id = hcloud_load_balancer.lb.id
   server_id        = hcloud_server.workers[each.value].id
+  use_private_ip   = true
 }
 
 resource "hcloud_firewall" "firewall_private" {
