@@ -3,46 +3,58 @@ resource "hcloud_network" "network" {
   ip_range = "10.0.0.0/16"
 }
 
-resource "hcloud_network_subnet" "network-subnet" {
+resource "hcloud_network_subnet" "network_subnet" {
   network_id   = hcloud_network.network.id
   type         = "cloud"
   network_zone = "eu-central"
   ip_range     = "10.0.0.0/24"
 }
 
-resource "hcloud_firewall" "firewall-private" {
-  name = "firewall-private"
+resource "hcloud_load_balancer" "lb" {
+  name               = "${var.cluster_name}-lb"
+  load_balancer_type = "lb11"
+  location           = var.server_location
 }
 
-resource "hcloud_firewall" "firewall-public" {
-  name = "firewall-public"
-  rule {
-    direction = "in"
-    port      = "22"
-    protocol  = "tcp"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
+resource "hcloud_load_balancer_network" "lb_network" {
+  load_balancer_id = hcloud_load_balancer.lb.id
+  network_id       = hcloud_network.network.id
+}
+
+resource "hcloud_managed_certificate" "managed_cert" {
+  name         = "managed_cert"
+  domain_names = [var.cluster_fqdn]
+}
+
+resource "hcloud_load_balancer_service" "lb_service_https" {
+  load_balancer_id = hcloud_load_balancer.lb.id
+  protocol         = "https"
+  http {
+    redirect_http = true
+    certificates  = [hcloud_managed_certificate.managed_cert.id]
   }
-  rule {
-    direction = "in"
-    port      = "80"
-    protocol  = "tcp"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
-  }
-  rule {
-    direction = "in"
-    port      = "443"
-    protocol  = "tcp"
-    source_ips = [
-      "0.0.0.0/0",
-      "::/0"
-    ]
-  }
+}
+
+resource "hcloud_load_balancer_service" "lb_service_ssh" {
+  load_balancer_id = hcloud_load_balancer.lb.id
+  protocol         = "tcp"
+  listen_port      = 22
+  destination_port = 22
+}
+
+resource "hcloud_load_balancer_target" "lb_target" {
+  for_each         = { for i, worker_index in var.lb : i => worker_index }
+  type             = "server"
+  load_balancer_id = hcloud_load_balancer.lb.id
+  server_id        = hcloud_server.workers[each.value].id
+}
+
+resource "hcloud_firewall" "firewall_private" {
+  name = "firewall_private"
+}
+
+resource "hcloud_firewall" "firewall_public" {
+  name = "firewall_public"
   rule {
     direction  = "in"
     port       = "2222"

@@ -77,3 +77,8 @@ variable "volumes" {
   }))
   description = "List of volumes to be attached to servers"
 }
+
+variable "lb" {
+  type        = list(number)
+  description = "List of workers to be load balanced"
+}

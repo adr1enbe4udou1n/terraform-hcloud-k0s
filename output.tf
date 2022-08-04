@@ -1,5 +1,5 @@
 output "public_ip" {
-  value       = hcloud_server.controller-01.ipv4_address
+  value       = hcloud_server.controller_01.ipv4_address
   description = "Value of the public ip address of the cluster, use this IP for your new domain, aka cluster_fqdn"
 }
 

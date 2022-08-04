@@ -1,4 +1,4 @@
-resource "hcloud_server" "controller-01" {
+resource "hcloud_server" "controller_01" {
   name        = "${var.cluster_name}-controller-01"
   image       = "ubuntu-22.04"
   server_type = "cx21"
@@ -11,10 +11,10 @@ resource "hcloud_server" "controller-01" {
     ip         = "10.0.0.2"
   }
   firewall_ids = [
-    hcloud_firewall.firewall-public.id,
+    hcloud_firewall.firewall_public.id,
   ]
   depends_on = [
-    hcloud_network_subnet.network-subnet
+    hcloud_network_subnet.network_subnet
   ]
   user_data = templatefile("init_controller.tftpl", {
     cluster_name               = var.cluster_name
@@ -53,10 +53,10 @@ resource "hcloud_server" "workers" {
     ip         = each.value.ip
   }
   firewall_ids = [
-    hcloud_firewall.firewall-private.id
+    hcloud_firewall.firewall_private.id
   ]
   depends_on = [
-    hcloud_network_subnet.network-subnet
+    hcloud_network_subnet.network_subnet
   ]
   user_data = templatefile("init_worker.tftpl", {
     cluster_name              = var.cluster_name

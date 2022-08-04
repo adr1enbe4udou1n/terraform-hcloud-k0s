@@ -28,6 +28,16 @@ workers = [
     name       = "data-01"
     short_name = "d1"
     ip         = "10.0.0.5"
+  },
+  {
+    name       = "data-02"
+    short_name = "d2"
+    ip         = "10.0.0.6"
+  },
+  {
+    name       = "runner-01"
+    short_name = "r1"
+    ip         = "10.0.0.7"
   }
 ]
 volumes = [
@@ -35,5 +45,11 @@ volumes = [
     name         = "volume-01"
     server_index = 2,
     size         = 10,
+  },
+  {
+    name         = "volume-02"
+    server_index = 3,
+    size         = 10,
   }
 ]
+lb = [0, 1]
