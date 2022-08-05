@@ -34,6 +34,11 @@ resource "hcloud_load_balancer_service" "lb_service_https" {
     redirect_http = true
     certificates  = [hcloud_managed_certificate.managed_cert.id]
   }
+  health_check {
+    http {
+      status_codes = ["2??", "3??", "404"]
+    }
+  }
 }
 
 resource "hcloud_load_balancer_service" "lb_service_ssh" {
