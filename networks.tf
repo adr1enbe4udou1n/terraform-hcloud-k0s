@@ -35,6 +35,10 @@ resource "hcloud_load_balancer_service" "lb_service_https" {
     certificates  = [hcloud_managed_certificate.managed_cert.id]
   }
   health_check {
+    protocol = "http"
+    port     = 80
+    interval = 15
+    timeout  = 10
     http {
       status_codes = ["2??", "3??", "404"]
     }
