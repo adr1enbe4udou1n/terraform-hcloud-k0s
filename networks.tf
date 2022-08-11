@@ -22,38 +22,16 @@ resource "hcloud_load_balancer_network" "lb_network" {
   ip               = "10.0.0.3"
 }
 
-resource "hcloud_managed_certificate" "managed_cert" {
-  name         = "managed_cert"
-  domain_names = var.domain_names
-}
-
-resource "hcloud_load_balancer_service" "lb_service_https" {
-  load_balancer_id = hcloud_load_balancer.lb.id
-  protocol         = "https"
-  http {
-    redirect_http = true
-    certificates  = [hcloud_managed_certificate.managed_cert.id]
-  }
-  health_check {
-    protocol = "http"
-    port     = 80
-    interval = 15
-    timeout  = 10
-    http {
-      status_codes = ["2??", "3??", "404"]
-    }
-  }
-}
-
-resource "hcloud_load_balancer_service" "lb_service_ssh" {
+resource "hcloud_load_balancer_service" "lb_services" {
+  for_each         = { for i, port in var.lb_services : i => port }
   load_balancer_id = hcloud_load_balancer.lb.id
   protocol         = "tcp"
-  listen_port      = 22
-  destination_port = 22
+  listen_port      = each.value
+  destination_port = each.value
 }
 
-resource "hcloud_load_balancer_target" "lb_target" {
-  for_each         = var.lb_targets
+resource "hcloud_load_balancer_target" "lb_targets" {
+  for_each         = { for i, worker in var.lb_targets : i => worker }
   type             = "server"
   load_balancer_id = hcloud_load_balancer.lb.id
   server_id        = hcloud_server.workers[each.value].id

@@ -2,7 +2,6 @@ hcloud_token                = ""
 cluster_name                = "kube"
 cluster_user                = "kube"
 cluster_fqdn                = "kube.example.org"
-domain_names                = ["*.example.org", "example.org"]
 server_location             = "nbg1"
 volume_size                 = 10
 my_public_ssh_name          = "kube"
@@ -44,4 +43,5 @@ volumes = {
     size   = 20
   }
 }
+lb_services = [80, 443]
 lb_targets = ["w1", "w2"]

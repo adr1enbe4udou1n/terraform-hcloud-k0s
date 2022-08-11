@@ -21,11 +21,6 @@ variable "cluster_fqdn" {
   description = "Your main domain for cluster access"
 }
 
-variable "domain_names" {
-  type        = list(string)
-  description = "Any domains for load balancer with valid Let's Encrypt certificates, wildcard domains are supported"
-}
-
 variable "server_location" {
   type        = string
   default     = "nbg1"
@@ -82,7 +77,12 @@ variable "volumes" {
   description = "List of volumes to be attached to servers"
 }
 
+variable "lb_services" {
+  type        = list(number)
+  description = "List of tcp ports to be load balanced through workers"
+}
+
 variable "lb_targets" {
-  type        = set(string)
+  type        = list(string)
   description = "List of workers to be load balanced"
 }

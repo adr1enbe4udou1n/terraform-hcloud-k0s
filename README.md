@@ -48,7 +48,6 @@ terraform apply
 | cluster_name               | Used for server names prefix, <cluster_name>-controller-01, <cluster_name>-worker-01, etc.                                                                                                             |
 | cluster_user               | The default non root user for ssh connection                                                                                                                                                           |
 | cluster_fqdn               | User for main cluster FQDN access through Kubernetes API endpoint. This domain must be created on your own registrar and point towards the main controller IP                                          |
-| domain_names               | Any domains for load balancer with valid Let's Encrypt certificates, wildcard domains are supported                                                                                                    |
 | server_location            | At Nuremberg by default                                                                                                                                                                                |
 | my_public_ssh_name         | Name of default Hetzner ssh key                                                                                                                                                                        |
 | my_public_ssh_key          | Your public SSH key for remote access to your nodes                                                                                                                                                    |
@@ -57,6 +56,7 @@ terraform apply
 | controller_public_ssh_key  | The public key of main controller server                                                                                                                                                               |
 | workers                    | List of all nodes to create for K0S cluster. The k0sctl will be updated as well                                                                                                                        |
 | volumes                    | List of additional volumes to attach to above workers                                                                                                                                                  |
+| lb_services                | List of tcp ports to be load balanced through workers                                                                                                                                                  |
 | lb_targets                 | List of workers to be load balanced                                                                                                                                                                    |
 
 Use the command `ssh-keygen -t ed25519 -f "cluster-key" -qN ""` for quick generation and put both content of private `cluster-key` and public `cluster-key.pub` keys into above respective `controller_private_ssh_key` and `controller_public_ssh_key` variables.
