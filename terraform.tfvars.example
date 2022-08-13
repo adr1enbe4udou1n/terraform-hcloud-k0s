@@ -1,10 +1,10 @@
-hcloud_token                = ""
+hcloud_token                = "<required_hcloud_token>"
 cluster_name                = "kube"
 cluster_user                = "kube"
 cluster_fqdn                = "kube.example.org"
 server_location             = "nbg1"
 my_public_ssh_name          = "kube"
-my_public_ssh_key           = ""
+my_public_ssh_key           = "<required_public_ssh_key>"
 my_ip_addresses             = ["0.0.0.0/0", "::/0"]
 controller_private_ssh_key  = <<EOF
 -----BEGIN OPENSSH PRIVATE KEY-----
