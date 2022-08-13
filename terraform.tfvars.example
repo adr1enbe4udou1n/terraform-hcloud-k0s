@@ -8,10 +8,10 @@ my_public_ssh_key           = "<required_public_ssh_key>"
 my_ip_addresses             = ["0.0.0.0/0", "::/0"]
 controller_private_ssh_key  = <<EOF
 -----BEGIN OPENSSH PRIVATE KEY-----
-
+<required_private_ssh_key>
 -----END OPENSSH PRIVATE KEY-----
 EOF
-controller_public_ssh_key   = ""
+controller_public_ssh_key   = "<controller_public_ssh_key>"
 workers = {
   w1 = {
     name = "worker-01"
