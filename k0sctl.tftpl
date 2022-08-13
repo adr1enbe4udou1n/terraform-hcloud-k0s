@@ -16,9 +16,8 @@ spec:
         keyPath: ${private_ssh_key_path}
       role: worker
       privateAddress: ${worker.ip}
-      installFlags:
-        - --labels kubernetes.io/role=${worker.role}
 %{ if worker.role != "worker" ~}
+      installFlags:
         - --taints node-role.kubernetes.io/${worker.role}:NoSchedule
 %{ endif ~}
 %{ endfor ~}
