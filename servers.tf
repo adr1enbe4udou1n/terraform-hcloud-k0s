@@ -1,8 +1,8 @@
 resource "hcloud_server" "cp" {
   name        = "${var.cluster_name}-controller-01"
-  image       = "ubuntu-22.04"
-  server_type = "cx21"
+  image       = var.server_image
   location    = var.server_location
+  server_type = var.controller_server_type
   ssh_keys = [
     var.my_public_ssh_name
   ]
@@ -42,9 +42,9 @@ resource "hcloud_server" "cp" {
 resource "hcloud_server" "workers" {
   for_each    = var.workers
   name        = "${var.cluster_name}-${each.value.name}"
-  image       = "ubuntu-22.04"
-  server_type = "cx21"
+  image       = var.server_image
   location    = var.server_location
+  server_type = each.value.type
   ssh_keys = [
     var.my_public_ssh_name
   ]

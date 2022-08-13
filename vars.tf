@@ -4,6 +4,18 @@ variable "hcloud_token" {
   description = "The token to access the Hetzner Cloud API (must have write access)"
 }
 
+variable "server_image" {
+  type        = string
+  default     = "ubuntu-22.04"
+  description = "The default OS image to use for the servers"
+}
+
+variable "server_location" {
+  type        = string
+  default     = "nbg1"
+  description = "The default location to create hcloud servers"
+}
+
 variable "cluster_name" {
   type        = string
   default     = "kube"
@@ -19,12 +31,6 @@ variable "cluster_user" {
 variable "cluster_fqdn" {
   type        = string
   description = "Your main domain for cluster access"
-}
-
-variable "server_location" {
-  type        = string
-  default     = "nbg1"
-  description = "The default location to create hcloud servers"
 }
 
 variable "my_public_ssh_name" {
@@ -48,6 +54,12 @@ variable "my_ip_addresses" {
   description = "Your public IP addresses for port whitelist via the Hetzner firewall configuration"
 }
 
+variable "controller_server_type" {
+  type        = string
+  default     = "cx21"
+  description = "Server type for the controller server"
+}
+
 variable "controller_private_ssh_key" {
   type        = string
   sensitive   = true
@@ -63,10 +75,11 @@ variable "controller_public_ssh_key" {
 variable "workers" {
   type = map(object({
     name = string
+    type = string
     ip   = string
     role = string
   }))
-  description = "List of workers, note as if the role is not defined to 'worker', the server will tainted for no scheduling pods"
+  description = "List of all nodes to create for K0S cluster. The k0sctl will be updated as well. Each worker are defined by a hostname, an internal ip and a node role. If the role is different from 'worker', this node will be tainted for preventing any scheduling from pods without proper tolerations."
 }
 
 variable "volumes" {
