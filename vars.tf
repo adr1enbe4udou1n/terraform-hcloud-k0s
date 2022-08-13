@@ -64,8 +64,9 @@ variable "workers" {
   type = map(object({
     name = string
     ip   = string
+    role = string
   }))
-  description = "List of workers"
+  description = "List of workers, note as if the role is not defined to 'worker', the server will tainted for no scheduling pods"
 }
 
 variable "volumes" {

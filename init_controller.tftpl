@@ -46,8 +46,7 @@ runcmd:
   - sh bootstrap-salt.sh -M -i ${minion_id}
   - 'sed -i "s/#master: salt/master: ${cluster_name}/" /etc/salt/minion'
   - systemctl restart salt-minion
-  - wget https://github.com/k0sproject/k0sctl/releases/download/v0.13.1/k0sctl-linux-x64
-  - chmod +x k0sctl-linux-x64
-  - mv k0sctl-linux-x64 /usr/local/bin/k0sctl
+  - curl -L --output /usr/local/bin/k0sctl "https://github.com/k0sproject/k0sctl/releases/download/v0.13.2/k0sctl-linux-x64"
+  - chmod +x /usr/local/bin/k0sctl
   - chown ${cluster_user}:${cluster_user} /id_cluster* && mv /id_cluster* /home/${cluster_user}/.ssh
   - chown ${cluster_user}:${cluster_user} /k0sctl.yaml && mv /k0sctl.yaml /home/${cluster_user}

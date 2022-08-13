@@ -17,18 +17,22 @@ workers = {
   w1 = {
     name = "worker-01"
     ip   = "10.0.0.4"
+    role = "worker"
   },
   w2 = {
     name = "worker-02"
     ip   = "10.0.0.5"
+    role = "worker"
   },
   d1 = {
     name = "data-01"
     ip   = "10.0.0.6"
+    role = "data"
   },
   d2 = {
     name = "data-02"
     ip   = "10.0.0.7"
+    role = "data"
   }
 }
 volumes = {
