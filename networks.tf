@@ -23,7 +23,7 @@ resource "hcloud_load_balancer_network" "lb_network" {
 }
 
 resource "hcloud_load_balancer_service" "lb_services" {
-  for_each         = { for i, port in var.lb_services : i => port }
+  for_each         = { for i, port in var.lb_services : port => port }
   load_balancer_id = hcloud_load_balancer.lb.id
   protocol         = "tcp"
   listen_port      = each.value
@@ -31,7 +31,7 @@ resource "hcloud_load_balancer_service" "lb_services" {
 }
 
 resource "hcloud_load_balancer_target" "lb_targets" {
-  for_each         = { for i, worker in var.lb_targets : i => worker }
+  for_each         = { for i, worker in var.lb_targets : worker => worker }
   type             = "server"
   load_balancer_id = hcloud_load_balancer.lb.id
   server_id        = hcloud_server.workers[each.value].id
