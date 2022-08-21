@@ -28,6 +28,7 @@ resource "hcloud_load_balancer_service" "lb_services" {
   protocol         = "tcp"
   listen_port      = each.value
   destination_port = each.value
+  proxyprotocol    = each.value == 443
 }
 
 resource "hcloud_load_balancer_target" "lb_targets" {
