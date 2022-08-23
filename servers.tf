@@ -36,6 +36,12 @@ resource "hcloud_server" "servers" {
     minion_id              = each.value.name
     cluster_public_ssh_key = local.cluster_public_ssh_key
   })
+
+  lifecycle {
+    ignore_changes = [
+      user_data
+    ]
+  }
 }
 
 resource "hcloud_volume" "volumes" {
