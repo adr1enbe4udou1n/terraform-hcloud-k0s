@@ -7,7 +7,7 @@ resource "hcloud_network_subnet" "network_subnet" {
   network_id   = hcloud_network.network.id
   type         = "cloud"
   network_zone = "eu-central"
-  ip_range     = "10.0.0.0/24"
+  ip_range     = "10.0.0.0/16"
 }
 
 resource "hcloud_load_balancer" "lb" {
@@ -19,7 +19,7 @@ resource "hcloud_load_balancer" "lb" {
 resource "hcloud_load_balancer_network" "lb_network" {
   load_balancer_id = hcloud_load_balancer.lb.id
   network_id       = hcloud_network.network.id
-  ip               = "10.0.0.3"
+  ip               = "10.0.0.2"
 }
 
 resource "hcloud_load_balancer_service" "lb_services" {
@@ -32,7 +32,7 @@ resource "hcloud_load_balancer_service" "lb_services" {
 }
 
 resource "hcloud_load_balancer_target" "lb_targets" {
-  for_each         = { for i, t in local.workers : i => t }
+  for_each         = { for i, t in local.main_workers : i => t }
   type             = "server"
   load_balancer_id = hcloud_load_balancer.lb.id
   server_id        = hcloud_server.servers[each.value].id

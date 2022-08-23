@@ -4,21 +4,21 @@ metadata:
   name: ${cluster_name}
 spec:
   hosts:
-    - localhost:
-        enabled: true
-      role: controller+worker
-      privateAddress: ${controller_ip}
-%{ for role, server in servers ~}
+%{ for s in servers ~}
     - ssh:
-        address: ${server.ip}
+        address: ${s.name}
         user: ${cluster_user}
         port: ${ssh_port}
         keyPath: ${private_ssh_key_path}
-      role: role == "controller" ? controller+worker : worker
-      privateAddress: ${server.ip}
-%{ if role != "worker" ~}
+      privateAddress: ${s.ip}
+%{ if s.role == "controller" ~}
+      role: controller+worker
+%{ else ~}
+      role: worker
+%{ if s.role != "worker" ~}
       installFlags:
-        - --taints node-role.kubernetes.io/${role}:NoSchedule
+        - --taints node-role.kubernetes.io/${s.role}:NoSchedule
+%{ endif ~}
 %{ endif ~}
 %{ endfor ~}
   k0s:

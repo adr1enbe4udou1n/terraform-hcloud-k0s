@@ -4,12 +4,6 @@ variable "hcloud_token" {
   description = "The token to access the Hetzner Cloud API (must have write access)"
 }
 
-variable "server_type" {
-  type        = string
-  default     = "cx21"
-  description = "The default type size of server"
-}
-
 variable "server_image" {
   type        = string
   default     = "ubuntu-22.04"
@@ -60,16 +54,28 @@ variable "my_ip_addresses" {
   description = "Your public IP addresses for port whitelist via the Hetzner firewall configuration"
 }
 
-variable "servers" {
-  type = map(object({
+variable "controller_server_type" {
+  type        = string
+  description = "Size of all controller servers"
+}
+
+variable "controller_server_count" {
+  type        = number
+  description = "Number of controller servers"
+}
+
+variable "workers" {
+  type = list(object({
+    role         = string
     server_type  = string
     server_count = number
   }))
-  description = "List of all nodes type to create for K0S cluster. Each type can have a different number of instances. The k0sctl config will be updated as well. If the role is different from 'worker', this node will be tainted for preventing any scheduling from pods without proper tolerations."
+  description = "List of all additional worker types to create for K0S cluster. Each type is identified by specific role and can have a different number of instances. The k0sctl config will be updated as well. If the role is different from 'worker', this node will be tainted for preventing any scheduling from pods without proper tolerations."
 }
 
 variable "volumes" {
-  type = map(object({
+  type = list(object({
+    name   = string,
     server = string,
     size   = number,
   }))

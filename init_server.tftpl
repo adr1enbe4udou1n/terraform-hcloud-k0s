@@ -20,7 +20,7 @@ packages:
 write_files:
   - path: /etc/hosts
     content: |
-      10.0.0.2 ${cluster_name} ${cluster_fqdn}
+      ${cluster_ip} ${cluster_name} ${cluster_fqdn}
     append: true
 
 runcmd:
