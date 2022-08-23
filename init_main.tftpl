@@ -20,19 +20,19 @@ write_files:
   - path: /etc/hosts
     content: |
       10.0.0.2 ${cluster_name} ${cluster_fqdn}
-%{ for w in workers ~}
-      ${w.ip} ${w.name} ${cluster_name}-${w.name}
+%{ for s in servers ~}
+      ${s.ip} ${s.name} ${cluster_name}-${s.name}
 %{ endfor ~}
     append: true
   - path: /id_cluster
     encoding: b64
     permissions: "0600"
     content: |
-      ${controller_private_ssh_key}
+      ${cluster_private_ssh_key}
   - path: /id_cluster.pub
     permissions: "0644"
     content: |
-      ${controller_public_ssh_key}
+      ${cluster_public_ssh_key}
   - path: /k0sctl.yaml
     encoding: b64
     content: |
@@ -43,7 +43,7 @@ runcmd:
   - sed -i "/^PermitRootLogin/s/^.*$/PermitRootLogin no/" /etc/ssh/sshd_config
   - systemctl restart ssh
   - curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
-  - sh bootstrap-salt.sh -M -i ${minion_id}
+  - sh bootstrap-salt.sh -M -i ${cluster_name}
   - 'sed -i "s/#master: salt/master: ${cluster_name}/" /etc/salt/minion'
   - systemctl restart salt-minion
   - curl -L --output /usr/local/bin/k0sctl "https://github.com/k0sproject/k0sctl/releases/download/v0.13.2/k0sctl-linux-x64"

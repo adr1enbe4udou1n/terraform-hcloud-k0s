@@ -32,10 +32,10 @@ resource "hcloud_load_balancer_service" "lb_services" {
 }
 
 resource "hcloud_load_balancer_target" "lb_targets" {
-  for_each         = { for i, worker in var.lb_targets : worker => worker }
+  for_each         = { for i, t in local.workers : i => t }
   type             = "server"
   load_balancer_id = hcloud_load_balancer.lb.id
-  server_id        = hcloud_server.workers[each.value].id
+  server_id        = hcloud_server.servers[each.value].id
   use_private_ip   = true
 }
 

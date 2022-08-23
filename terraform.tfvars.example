@@ -1,4 +1,5 @@
 hcloud_token                = "<required_hcloud_token>"
+server_type                 = "cx21"
 server_image                = "ubuntu-22.04"
 server_location             = "nbg1"
 cluster_name                = "kube"
@@ -7,50 +8,28 @@ cluster_fqdn                = "kube.example.org"
 my_public_ssh_name          = "kube"
 my_public_ssh_key           = "<required_public_ssh_key>"
 my_ip_addresses             = ["0.0.0.0/0", "::/0"]
-controller_server_type      = "cx21"
-controller_private_ssh_key  = <<EOF
------BEGIN OPENSSH PRIVATE KEY-----
-<required_private_ssh_key>
------END OPENSSH PRIVATE KEY-----
-EOF
-controller_public_ssh_key   = "<controller_public_ssh_key>"
-workers = {
-  w1 = {
-    name = "worker-01"
-    type = "cx21"
-    ip   = "10.0.0.4"
-    role = "worker"
+servers = {
+  controller = {
+    server_type  = "cx21",
+    server_count = 2,
+  }
+  worker = {
+    server_type  = "cx21"
+    server_count = 2
   },
-  w2 = {
-    name = "worker-02"
-    type = "cx21"
-    ip   = "10.0.0.5"
-    role = "worker"
-  },
-  d1 = {
-    name = "data-01"
-    type = "cx21"
-    ip   = "10.0.0.6"
-    role = "data"
-  },
-  d2 = {
-    name = "data-02"
-    type = "cx21"
-    ip   = "10.0.0.7"
-    role = "data"
+  data = {
+    server_type  = "cx21"
+    server_count = 2
   }
 }
 volumes = {
-  vol1 = {
-    name   = "volume-01"
-    server = "d1"
-    size   = 20
+  vol-01 = {
+    server = "data-01"
+    size   = 10
   }
-  vol2 = {
-    name   = "volume-02"
-    server = "d2"
-    size   = 20
+  vol-02 = {
+    server = "data-02"
+    size   = 10
   }
 }
 lb_services = [80, 443]
-lb_targets = ["w1", "w2"]

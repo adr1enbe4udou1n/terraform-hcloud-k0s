@@ -1,5 +1,5 @@
 output "cluster_ip" {
-  value       = hcloud_server.cp.ipv4_address
+  value       = hcloud_server.main.ipv4_address
   description = "Public ip address of the control pane, link this IP to your cluster_fqdn"
 }
 
@@ -14,6 +14,6 @@ output "ssh_config" {
     cluster_name = var.cluster_name
     cluster_user = var.cluster_user
     cluster_fqdn = var.cluster_fqdn
-    servers      = var.workers
+    servers      = local.servers
   })
 }

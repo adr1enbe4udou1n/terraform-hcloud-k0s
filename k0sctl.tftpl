@@ -8,17 +8,17 @@ spec:
         enabled: true
       role: controller+worker
       privateAddress: ${controller_ip}
-%{ for worker in workers ~}
+%{ for role, server in servers ~}
     - ssh:
-        address: ${worker.ip}
+        address: ${server.ip}
         user: ${cluster_user}
         port: ${ssh_port}
         keyPath: ${private_ssh_key_path}
-      role: worker
-      privateAddress: ${worker.ip}
-%{ if worker.role != "worker" ~}
+      role: role == "controller" ? controller+worker : worker
+      privateAddress: ${server.ip}
+%{ if role != "worker" ~}
       installFlags:
-        - --taints node-role.kubernetes.io/${worker.role}:NoSchedule
+        - --taints node-role.kubernetes.io/${role}:NoSchedule
 %{ endif ~}
 %{ endfor ~}
   k0s:
