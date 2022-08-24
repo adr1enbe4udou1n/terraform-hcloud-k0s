@@ -15,7 +15,7 @@ spec:
       role: controller+worker
 %{ else ~}
       role: worker
-%{ if s.role != "worker" ~}
+%{ if s.role != "default" ~}
       installFlags:
         - --taints node-role.kubernetes.io/${s.role}:NoSchedule
 %{ endif ~}

@@ -71,10 +71,11 @@ Next fill required variables :
 | hcloud_token      |              | The above token generated from hcloud project                           |
 | server_image      | ubuntu-22.04 | Bare OS server of nodes                                                 |
 | server_type       | nbg1         | Cluster location                                                        |
-| my_public_ssh_key |              | Your own public ssh key in order to login to any node of the cluster    |  |
 | cluster_name      | kube         | Name of the cluster, must be simple alphanum + hyphen + underscore      |
 | cluster_user      | kube         | Default UID 1000 sudoer user                                            |
 | cluster_fqdn      |              | Fully qualified domain name of your cluster, where you have DNS control |
+| my_public_ssh_key |              | Your own public ssh key in order to login to any node of the cluster    |  |
+| my_ip_addresses   | any          | IP whitelist for Hetzner firewall for SSH and kube-apiserver access     |
 
 You can stay with the default configs for other variables, but don't worry, as we're using Terraform it can be changed easily after cluster installation ❤️
 
@@ -129,7 +130,97 @@ In order to connect remotely to your K0S cluster, use `k0sctl kubeconfig` in ord
 
 This template support many cluster typologies thanks to cluster related variables.
 
-TODO
+### Kube controllers
+
+Create a HA Kube controller is as easy as edit `controllers` variable :
+
+| Property     | Description                                                                                         |
+| ------------ | --------------------------------------------------------------------------------------------------- |
+| server_type  | Compute size of servers ([cf available Hetzner sizes](https://www.hetzner.com/cloud#pricing))       |
+| server_count | Number of controller instances, 3 at least for HA, should be an odd number for quorum (3,5,7, etc.) |
+
+### Kube workers
+
+Use `workers` variable for workers configuration. It's a list of type of workers, as we can imagine different application types (any DB or GPU dedicated tasks for example).
+
+| Property     | Description                                                                        |
+| ------------ | ---------------------------------------------------------------------------------- |
+| role         | Worker's role, mostly named as a dedicated task (data, gpu, monitor, runner, etc.) |
+| server_type  | Same as controller                                                                 |
+| server_count | Number of worker instances for above role                                          |
+
+Note that there is a specific `default` role that involve :
+
+1. The `default` workers will be the only taken into account for load balancing, as others should be use mainly for specific tasks.
+2. The dedicated tasks nodes (those different from `default`) will be tainted for preventing any scheduling from pods without proper toleration.
+
+### Volumes
+
+| Property | Description                                                                              |
+| -------- | ---------------------------------------------------------------------------------------- |
+| name     | Hetzner volume identifier name                                                           |
+| server   | Server where the volume will be automatically mounted, must correspond to a valid worker |
+| size     | Size of volume (from 10GB to 10TB)                                                       |
+
+### Load balancer
+
+Use `lb_services` to specify which services (TCP ports) must be load balanced, mostly `80` and `443` (default).
+
+Note as `443` port will use [proxy protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt) in order to keep user source information when traffic arrive to our workers (client IP). So be sure that your ingress controller (nginx, traefik, etc.) is configured for accepting this protocol.
+
+### Config example
+
+The below config will create following Kubernetes cluster typology :
+
+* **3 controllers**
+* **3 default workers** that will be used as targets for load balancing
+* **2 data workers** tainted as `data` for data specific tasks (DB, Elasticsearch, ...)
+* **2 runner workers** tainted as `runner` for any CI building tasks with powerful AMD CPU
+* **2 monitoring workers** tainted as `monitor` for any monitoring tasks (Prometheus and scrapers, etc.)
+* **2 volumes**, 1 for each above `data` servers
+* **3 load balanced TCP ports** to `default` workers (`22` is useful for any self-hosted VCS service like GitLab, Gitea)
+
+```tf
+controllers = {
+  server_type  = "cx21"
+  server_count = 3
+}
+workers = [
+  {
+    role         = "default",
+    server_type  = "cx21"
+    server_count = 3,
+  },
+  {
+    role         = "data",
+    server_type  = "cx31"
+    server_count = 2
+  },
+  {
+    role         = "runner",
+    server_type  = "cpx31"
+    server_count = 2
+  },
+  {
+    role         = "monitor",
+    server_type  = "cx31"
+    server_count = 2
+  }
+]
+volumes = [
+  {
+    name   = "vol-01",
+    server = "data-01"
+    size   = 10
+  },
+  {
+    name   = "vol-02",
+    server = "data-02"
+    size   = 10
+  }
+]
+lb_services = [22, 80, 443]
+```
 
 ## :memo: License
 

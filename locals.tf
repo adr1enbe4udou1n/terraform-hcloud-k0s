@@ -1,9 +1,9 @@
 locals {
   servers = flatten([
     [
-      for i in range(var.controller_server_count) : {
+      for i in range(var.controllers.server_count) : {
         name        = "controller-${format("%02d", i + 1)}"
-        server_type = var.controller_server_type
+        server_type = var.controllers.server_type
         role        = "controller"
         ip          = "10.0.0.${i + 3}",
         is_main     = i == 0
@@ -21,7 +21,7 @@ locals {
       ]
     ])
   ])
-  main_workers            = toset([for each in local.servers : each.name if each.role == "worker"])
+  main_workers            = toset([for each in local.servers : each.name if each.role == "default"])
   cluster_private_ssh_key = file("keys/id_cluster")
   cluster_public_ssh_key  = file("keys/id_cluster.pub")
   k0sctl = templatefile("k0sctl.tftpl", {

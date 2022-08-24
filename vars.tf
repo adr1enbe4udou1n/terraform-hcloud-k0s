@@ -54,14 +54,12 @@ variable "my_ip_addresses" {
   description = "Your public IP addresses for port whitelist via the Hetzner firewall configuration"
 }
 
-variable "controller_server_type" {
-  type        = string
-  description = "Size of all controller servers"
-}
-
-variable "controller_server_count" {
-  type        = number
-  description = "Number of controller servers"
+variable "controllers" {
+  type = object({
+    server_type  = string,
+    server_count = string
+  })
+  description = "Size and count of controller servers"
 }
 
 variable "workers" {
@@ -70,7 +68,7 @@ variable "workers" {
     server_type  = string
     server_count = number
   }))
-  description = "List of all additional worker types to create for K0S cluster. Each type is identified by specific role and can have a different number of instances. The k0sctl config will be updated as well. If the role is different from 'worker', this node will be tainted for preventing any scheduling from pods without proper tolerations."
+  description = "List of all additional worker types to create for K0S cluster. Each type is identified by specific role and can have a different number of instances. The k0sctl config will be updated as well. If the role is different from 'default', this node will be tainted for preventing any scheduling from pods without proper tolerations."
 }
 
 variable "volumes" {
