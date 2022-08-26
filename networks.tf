@@ -5,7 +5,7 @@ resource "hcloud_network" "network" {
 
 resource "hcloud_network_subnet" "network_subnet" {
   network_id   = hcloud_network.network.id
-  type         = "cloud"
+  type         = "server"
   network_zone = "eu-central"
   ip_range     = "10.0.0.0/24"
 }
@@ -44,11 +44,11 @@ resource "hcloud_load_balancer_target" "lb_targets" {
 }
 
 resource "hcloud_firewall" "firewall_private" {
-  name = "firewall_private"
+  name = "firewall-private"
 }
 
 resource "hcloud_firewall" "firewall_public" {
-  name = "firewall_public"
+  name = "firewall-public"
   rule {
     direction  = "in"
     port       = "2222"
