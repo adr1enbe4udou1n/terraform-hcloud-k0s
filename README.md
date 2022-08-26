@@ -149,10 +149,10 @@ Use `workers` variable for workers configuration. It's a list of type of workers
 | server_type  | Same as controller                                                                 |
 | server_count | Number of worker instances for above role                                          |
 
-Note that there is a specific `default` role that involve :
+Note that there is a specific default `worker` role that involve :
 
-1. The `default` workers will be the only taken into account for load balancing, as others should be use mainly for specific tasks.
-2. The dedicated tasks nodes (those different from `default`) will be tainted for preventing any scheduling from pods without proper toleration.
+1. Will be the only taken into account for load balancing, as others should be use mainly for specific tasks.
+2. The dedicated tasks nodes (those different from `worker` role) will be tainted for preventing any scheduling from pods without proper toleration.
 
 ### Volumes
 
@@ -178,7 +178,7 @@ The below config will create following Kubernetes cluster typology :
 * **2 runner workers** tainted as `runner` for any CI building tasks with powerful AMD CPU
 * **2 monitoring workers** tainted as `monitor` for any monitoring tasks (Prometheus and scrapers, etc.)
 * **2 volumes**, 1 for each above `data` servers
-* **3 load balanced TCP ports** to `default` workers (`22` is useful for any self-hosted VCS service like GitLab, Gitea)
+* **3 load balanced TCP ports** to default workers (with role `worker`) (`22` is useful for any self-hosted VCS service like GitLab, Gitea)
 
 ```tf
 controllers = {
@@ -187,7 +187,7 @@ controllers = {
 }
 workers = [
   {
-    role         = "default",
+    role         = "worker",
     server_type  = "cx21"
     server_count = 3,
   },

@@ -5,7 +5,7 @@ locals {
         name        = "controller-${format("%02d", i + 1)}"
         server_type = var.controllers.server_type
         role        = "controller"
-        ip          = "10.0.0.${i + 3}",
+        ip          = "10.0.0.${i + 2}",
         is_main     = i == 0
       }
     ],
@@ -15,13 +15,13 @@ locals {
           name        = "${s.role}-${format("%02d", j + 1)}"
           server_type = s.server_type
           role        = s.role
-          ip          = "10.0.${i + 1}.${s.role == "controller" ? j + 4 : j}"
+          ip          = "10.0.0.${j + 10 + (i * 20)}"
           is_main     = false
         }
       ]
     ])
   ])
-  main_workers            = toset([for each in local.servers : each.name if each.role == "default"])
+  main_workers            = toset([for each in local.servers : each.name if each.role == "worker"])
   cluster_private_ssh_key = file("keys/id_cluster")
   cluster_public_ssh_key  = file("keys/id_cluster.pub")
   k0sctl = templatefile("k0sctl.tftpl", {

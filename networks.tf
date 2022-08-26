@@ -7,7 +7,7 @@ resource "hcloud_network_subnet" "network_subnet" {
   network_id   = hcloud_network.network.id
   type         = "cloud"
   network_zone = "eu-central"
-  ip_range     = "10.0.0.0/16"
+  ip_range     = "10.0.0.0/24"
 }
 
 resource "hcloud_load_balancer" "lb" {
@@ -19,7 +19,7 @@ resource "hcloud_load_balancer" "lb" {
 resource "hcloud_load_balancer_network" "lb_network" {
   load_balancer_id = hcloud_load_balancer.lb.id
   network_id       = hcloud_network.network.id
-  ip               = "10.0.0.2"
+  ip               = "10.0.0.250"
 }
 
 resource "hcloud_load_balancer_service" "lb_services" {

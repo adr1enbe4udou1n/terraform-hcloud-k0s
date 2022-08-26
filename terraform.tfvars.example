@@ -13,7 +13,7 @@ controllers = {
 }
 workers = [
   {
-    role         = "default",
+    role         = "worker",
     server_type  = "cx21"
     server_count = 2,
   },
