@@ -7,10 +7,6 @@ resource "hcloud_server" "servers" {
   ssh_keys = [
     var.my_public_ssh_name
   ]
-  network {
-    network_id = hcloud_network.network.id
-    ip         = each.value.ip
-  }
   firewall_ids = [
     each.value.is_main ? hcloud_firewall.firewall_public.id : hcloud_firewall.firewall_private.id,
   ]
@@ -43,6 +39,13 @@ resource "hcloud_server" "servers" {
       ssh_keys
     ]
   }
+}
+
+resource "hcloud_server_network" "servers" {
+  for_each   = { for i, s in local.servers : s.name => s }
+  server_id  = hcloud_server.servers[each.value.name].id
+  network_id = hcloud_network.network.id
+  ip         = each.value.ip
 }
 
 resource "hcloud_volume" "volumes" {
