@@ -7,8 +7,12 @@ users:
       - ${public_ssh_key}
       - ${cluster_public_ssh_key}
 
-timezone: Europe/Paris
-locale: fr_FR.UTF-8
+%{ if server_timezone != null ~}
+timezone: ${server_timezone}
+%{ endif ~}
+%{ if server_locale != null ~}
+locale: ${server_locale}
+%{ endif ~}
 package_update: true
 package_upgrade: true
 package_reboot_if_required: true

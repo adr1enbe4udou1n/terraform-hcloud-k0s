@@ -13,7 +13,17 @@ variable "server_image" {
 variable "server_location" {
   type        = string
   default     = "nbg1"
-  description = "The default location to create hcloud servers"
+  description = "The default location where to create hcloud resources"
+}
+
+variable "server_timezone" {
+  type        = string
+  description = "The default timezone to use for the servers"
+}
+
+variable "server_locale" {
+  type        = string
+  description = "The default locale to create hcloud servers"
 }
 
 variable "cluster_name" {

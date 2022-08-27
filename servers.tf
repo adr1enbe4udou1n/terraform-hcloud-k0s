@@ -14,6 +14,8 @@ resource "hcloud_server" "servers" {
     hcloud_network_subnet.network_subnet
   ]
   user_data = each.value.is_main ? templatefile("init_main.tftpl", {
+    server_timezone         = var.server_timezone
+    server_locale           = var.server_locale
     cluster_name            = var.cluster_name
     cluster_user            = var.cluster_user
     cluster_fqdn            = var.cluster_fqdn
@@ -24,6 +26,8 @@ resource "hcloud_server" "servers" {
     cluster_public_ssh_key  = local.cluster_public_ssh_key
     k0sctl_file_content     = base64encode(local.k0sctl)
     }) : templatefile("init_server.tftpl", {
+    server_timezone        = var.server_timezone
+    server_locale          = var.server_locale
     cluster_name           = var.cluster_name
     cluster_user           = var.cluster_user
     cluster_fqdn           = var.cluster_fqdn

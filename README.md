@@ -71,6 +71,8 @@ Next fill required variables :
 | hcloud_token      |              | The above token generated from hcloud project                           |
 | server_image      | ubuntu-22.04 | Bare OS server of nodes                                                 |
 | server_type       | nbg1         | Cluster location                                                        |
+| server_timezone   |              | Optional timezone for OS                                                |
+| server_locale     |              | Optional locale for OS                                                  |
 | cluster_name      | kube         | Name of the cluster, must be simple alphanum + hyphen + underscore      |
 | cluster_user      | kube         | Default UID 1000 sudoer user                                            |
 | cluster_fqdn      |              | Fully qualified domain name of your cluster, where you have DNS control |
