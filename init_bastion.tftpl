@@ -25,11 +25,7 @@ write_files:
   - path: /etc/hosts
     content: |
 %{ for s in servers ~}
-%{ if s.is_main ~}
-      ${s.ip} ${s.name} ${cluster_name}-${s.name} ${cluster_name} ${cluster_fqdn}
-%{ else ~}
       ${s.ip} ${s.name} ${cluster_name}-${s.name}
-%{ endif ~}
 %{ endfor ~}
     append: true
   - path: /id_cluster
@@ -51,7 +47,7 @@ runcmd:
   - sed -i "/^PermitRootLogin/s/^.*$/PermitRootLogin no/" /etc/ssh/sshd_config
   - systemctl restart ssh
   - curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
-  - sh bootstrap-salt.sh -M -i ${minion_id}
+  - sh bootstrap-salt.sh -M -i bastion
   - 'sed -i "s/#master: salt/master: ${cluster_name}/" /etc/salt/minion'
   - systemctl restart salt-minion
   - curl -L --output /usr/local/bin/k0sctl "https://github.com/k0sproject/k0sctl/releases/download/v0.13.2/k0sctl-linux-x64"

@@ -76,7 +76,7 @@ Next fill required variables :
 | cluster_name      | kube         | Name of the cluster, must be simple alphanum + hyphen + underscore      |
 | cluster_user      | kube         | Default UID 1000 sudoer user                                            |
 | cluster_fqdn      |              | Fully qualified domain name of your cluster, where you have DNS control |
-| my_public_ssh_key |              | Your own public ssh key in order to login to any node of the cluster    |  |
+| my_public_ssh_key |              | Your own public ssh key in order to login to any node of the cluster    |
 | my_ip_addresses   | any          | IP whitelist for Hetzner firewall for SSH and kube-apiserver access     |
 
 You can stay with the default configs for other variables, but don't worry, as we're using Terraform it can be changed easily after cluster installation ❤️

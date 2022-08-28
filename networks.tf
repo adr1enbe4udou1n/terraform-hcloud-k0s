@@ -47,14 +47,18 @@ resource "hcloud_firewall" "firewall_private" {
   name = "firewall-private"
 }
 
-resource "hcloud_firewall" "firewall_public" {
-  name = "firewall-public"
+resource "hcloud_firewall" "firewall_bastion" {
+  name = "firewall-bastion"
   rule {
     direction  = "in"
     port       = "2222"
     protocol   = "tcp"
     source_ips = var.my_ip_addresses
   }
+}
+
+resource "hcloud_firewall" "firewall_controllers" {
+  name = "firewall-controllers"
   rule {
     direction  = "in"
     port       = "6443"

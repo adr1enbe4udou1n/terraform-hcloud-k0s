@@ -1,12 +1,12 @@
 locals {
+  bastion_ip = "10.0.0.254"
   servers = flatten([
     [
       for i in range(var.controllers.server_count) : {
         name        = "controller-${format("%02d", i + 1)}"
         server_type = var.controllers.server_type
         role        = "controller"
-        ip          = "10.0.0.${i + 2}",
-        is_main     = i == 0
+        ip          = "10.0.0.${i + 2}"
       }
     ],
     flatten([
@@ -16,7 +16,6 @@ locals {
           server_type = s.server_type
           role        = s.role
           ip          = "10.0.0.${j + 10 + (i * 20)}"
-          is_main     = false
         }
       ]
     ])

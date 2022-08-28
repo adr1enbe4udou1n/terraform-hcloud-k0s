@@ -72,6 +72,13 @@ variable "controllers" {
   description = "Size and count of controller servers"
 }
 
+variable "bastion" {
+  type = object({
+    server_type = string,
+  })
+  description = "Bastion server size"
+}
+
 variable "workers" {
   type = list(object({
     role         = string

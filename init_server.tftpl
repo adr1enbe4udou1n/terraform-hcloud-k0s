@@ -24,7 +24,7 @@ packages:
 write_files:
   - path: /etc/hosts
     content: |
-      ${cluster_ip} ${cluster_name} ${cluster_fqdn}
+      ${bastion_ip} bastion
     append: true
 
 runcmd:
@@ -33,5 +33,5 @@ runcmd:
   - systemctl restart ssh
   - curl -o bootstrap-salt.sh -L https://bootstrap.saltproject.io
   - sh bootstrap-salt.sh -i ${minion_id}
-  - 'sed -i "s/#master: salt/master: ${cluster_name}/" /etc/salt/minion'
+  - 'sed -i "s/#master: salt/master: bastion/" /etc/salt/minion'
   - systemctl restart salt-minion
