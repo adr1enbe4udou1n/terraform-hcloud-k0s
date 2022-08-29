@@ -39,7 +39,8 @@ resource "hcloud_load_balancer_target" "lb_targets" {
   use_private_ip   = true
 
   depends_on = [
-    hcloud_load_balancer_network.lb_network
+    hcloud_load_balancer_network.lb_network,
+    hcloud_server.servers
   ]
 }
 
