@@ -21,7 +21,7 @@ Additional controllers and workers can be easily added thanks to terraform varia
 
 ### Networking and firewall
 
-All nodes including LB will be linked with a proper private network as well as **solid firewall protection**. Only the 1st main control pane node will have open ports for SSH (port **2222**) and kube-apiserver (port **6443**) for admin management. Other internal nodes will be accessed by SSH Jump. **IP whitelist** is supported by simple TF variable.
+All nodes including LB will be linked with a proper private network as well as **solid firewall protection**. Only the 1st main control pane node will have open ports for SSH (port **2222**) and kube-apiserver (port **6443**) for admin management. Other internal nodes will be accessed by SSH Jump. **IP whitelist** is supported by simple TF variable (only applied on SSH).
 
 ### OS management
 
@@ -77,7 +77,7 @@ Next fill required variables :
 | cluster_user      | kube         | Default UID 1000 sudoer user                                            |
 | cluster_fqdn      |              | Fully qualified domain name of your cluster, where you have DNS control |
 | my_public_ssh_key |              | Your own public ssh key in order to login to any node of the cluster    |
-| my_ip_addresses   | any          | IP whitelist for Hetzner firewall for SSH and kube-apiserver access     |
+| my_ip_addresses   | any          | IP whitelist for Hetzner firewall for SSH                               |
 
 You can stay with the default configs for other variables, but don't worry, as we're using Terraform it can be changed easily after cluster installation ❤️
 
@@ -136,6 +136,10 @@ In order to connect remotely to your K0S cluster, use `k0sctl kubeconfig` in ord
 ## Cluster configuration
 
 This template support many cluster typologies thanks to cluster related variables.
+
+### Bastion Server
+
+The `bastion_server` variable allows you to define the server used for main SSH access and K0S installer location. It's `controller-01` by default.
 
 ### Kube controllers
 
