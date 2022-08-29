@@ -61,9 +61,11 @@ resource "hcloud_firewall" "firewall_bastion" {
 resource "hcloud_firewall" "firewall_controllers" {
   name = "firewall-controllers"
   rule {
-    direction  = "in"
-    port       = "6443"
-    protocol   = "tcp"
-    source_ips = var.my_ip_addresses
+    direction = "in"
+    port      = "6443"
+    protocol  = "tcp"
+    source_ips = [
+      "0.0.0.0/0"
+    ]
   }
 }
