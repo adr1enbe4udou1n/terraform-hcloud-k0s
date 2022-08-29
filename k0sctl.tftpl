@@ -29,8 +29,5 @@ spec:
           externalAddress: ${cluster_fqdn}
           sans:
             - ${cluster_fqdn}
-        storage:
-          etcd:
-            peerAddress: ${controller_ip}
         network:
           provider: calico

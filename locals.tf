@@ -28,7 +28,6 @@ locals {
     cluster_name         = var.cluster_name
     cluster_user         = var.cluster_user
     cluster_fqdn         = var.cluster_fqdn
-    controller_ip        = one(local.controllers).ip
     ssh_port             = "2222"
     private_ssh_key_path = "~/.ssh/id_cluster"
     servers              = local.servers

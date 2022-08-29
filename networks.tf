@@ -64,6 +64,6 @@ resource "hcloud_firewall" "firewall_controllers" {
     direction  = "in"
     port       = "6443"
     protocol   = "tcp"
-    source_ips = var.my_ip_addresses
+    source_ips = ["0.0.0.0/0"]
   }
 }
