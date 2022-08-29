@@ -3,9 +3,14 @@ output "servers" {
   description = "List of servers"
 }
 
-output "cluster_ip" {
-  value       = hcloud_server.servers["controller-01"].ipv4_address
-  description = "Public ip address of the main control pane, link this IP to your cluster_fqdn"
+output "bastion_ip" {
+  value       = hcloud_server.servers[var.bastion_server].ipv4_address
+  description = "Public ip address of the bastion, link this IP to connection to your bastion server"
+}
+
+output "controller_ips" {
+  value       = [for c in local.controllers : hcloud_server.servers[c].ipv4_address]
+  description = "Public ip address of the controllers, link them to your cluster_fqdn"
 }
 
 output "lb_ip" {
@@ -23,7 +28,7 @@ output "ssh_config" {
   value = templatefile("ssh.config.tftpl", {
     cluster_name = var.cluster_name
     cluster_user = var.cluster_user
-    cluster_fqdn = var.cluster_fqdn
+    bastion_ip   = hcloud_server.servers[var.bastion_server].ipv4_address
     servers      = local.servers
   })
 }

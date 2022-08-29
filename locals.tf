@@ -1,5 +1,4 @@
 locals {
-  bastion_ip = "10.0.0.254"
   servers = flatten([
     [
       for i in range(var.controllers.server_count) : {
@@ -20,7 +19,9 @@ locals {
       ]
     ])
   ])
+  private_bastion_ip      = one([for each in local.servers : each.ip if each.name == var.bastion_server])
   main_workers            = toset([for each in local.servers : each.name if each.role == "worker"])
+  controllers             = toset([for each in local.servers : each.name if each.role == "controller"])
   cluster_private_ssh_key = file("keys/id_cluster")
   cluster_public_ssh_key  = file("keys/id_cluster.pub")
   k0sctl = templatefile("k0sctl.tftpl", {

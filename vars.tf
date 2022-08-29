@@ -64,19 +64,18 @@ variable "my_ip_addresses" {
   description = "Your public IP addresses for port whitelist via the Hetzner firewall configuration"
 }
 
+variable "bastion_server" {
+  type        = string
+  default     = "controller-01"
+  description = "Server to use as bastion, first controller by default"
+}
+
 variable "controllers" {
   type = object({
     server_type  = string,
     server_count = string
   })
   description = "Size and count of controller servers"
-}
-
-variable "bastion" {
-  type = object({
-    server_type = string,
-  })
-  description = "Bastion server size"
 }
 
 variable "workers" {
