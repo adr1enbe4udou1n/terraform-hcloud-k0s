@@ -113,7 +113,7 @@ Then you can finally use `ssh <cluster_name>` in order to log in to your main co
 
 ### Salt
 
-Once logged to your main controller, don't forget to active *Salt*, just type `sudo salt-key -A` in order to accept all minions. You are now ready for using `sudo salt '*' pkg.upgrade` from main control pane in order to upgrade all nodes in one single time.
+Once logged to your bastion, don't forget to active *Salt*, just type `sudo salt-key -A` in order to accept all minions. You are now ready for using `sudo salt '*' pkg.upgrade` from main control pane in order to upgrade all nodes in one single time.
 
 > If salt-key command is not existing, wait few minutes as it's necessary that cloud-init has finished his job.
 
@@ -121,7 +121,9 @@ Once logged to your main controller, don't forget to active *Salt*, just type `s
 
 #### K0S install
 
-Once successfully logged, note the `k0sctl.yaml` file automatically generated in your home directory. You're now finally ready to install your Kubernetes cluster by simply launching `k0sctl apply` !
+> Be sure that `cluster_fqdn` is set on your DNS and actualized on all nodes as explained above before continue. It's the domain used for kube-apiserver, which is mandatory for validating Kubernetes API access for all workers.
+
+When logged, note the `k0sctl.yaml` file automatically generated in your home directory. You're now finally ready to install your Kubernetes cluster by simply launching `k0sctl apply` !
 
 > If you get any random error, try again, k0sctl is not 100% reliable... Be sure to have SSH access to other nodes with `ssh data-01 -p2222 -i .ssh/id_cluster`
 
