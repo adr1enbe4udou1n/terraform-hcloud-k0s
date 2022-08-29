@@ -7,12 +7,6 @@ resource "hcloud_server" "servers" {
   ssh_keys = [
     var.my_public_ssh_name
   ]
-  firewall_ids = flatten([
-    each.value.name == var.bastion_server
-    ? [hcloud_firewall.firewall_bastion.id]
-    : [],
-    [each.value.role == "controller" ? hcloud_firewall.firewall_controllers.id : hcloud_firewall.firewall_private.id],
-  ])
   depends_on = [
     hcloud_network_subnet.network_subnet
   ]

@@ -61,9 +61,29 @@ resource "hcloud_firewall" "firewall_bastion" {
 resource "hcloud_firewall" "firewall_controllers" {
   name = "firewall-controllers"
   rule {
-    direction  = "in"
-    port       = "6443"
-    protocol   = "tcp"
-    source_ips = ["0.0.0.0/0"]
+    direction = "in"
+    port      = "6443"
+    protocol  = "tcp"
+    source_ips = flatten([
+      [var.my_ip_addresses],
+      [for each in hcloud_server.servers : "${each.ipv4_address}/32"]
+    ])
   }
+}
+
+resource "hcloud_firewall_attachment" "bastion" {
+  firewall_id = hcloud_firewall.firewall_bastion.id
+  server_ids  = [hcloud_server.servers[var.bastion_server].id]
+}
+
+resource "hcloud_firewall_attachment" "workers" {
+  for_each    = { for i, s in local.servers : s.name => s if s.role != "controller" }
+  firewall_id = hcloud_firewall.firewall_private.id
+  server_ids  = [hcloud_server.servers[each.key].id]
+}
+
+resource "hcloud_firewall_attachment" "controllers" {
+  for_each    = { for i, s in local.servers : s.name => s if s.role == "controller" }
+  firewall_id = hcloud_firewall.firewall_controllers.id
+  server_ids  = [hcloud_server.servers[each.key].id]
 }
