@@ -71,19 +71,17 @@ resource "hcloud_firewall" "firewall_controllers" {
   }
 }
 
+resource "hcloud_firewall_attachment" "deny_all" {
+  firewall_id = hcloud_firewall.firewall_private.id
+  server_ids  = [for s in local.servers : hcloud_server.servers[s.name].id]
+}
+
 resource "hcloud_firewall_attachment" "bastion" {
   firewall_id = hcloud_firewall.firewall_bastion.id
   server_ids  = [hcloud_server.servers[var.bastion_server].id]
 }
 
-resource "hcloud_firewall_attachment" "workers" {
-  for_each    = { for i, s in local.servers : s.name => s if s.role != "controller" }
-  firewall_id = hcloud_firewall.firewall_private.id
-  server_ids  = [hcloud_server.servers[each.key].id]
-}
-
 resource "hcloud_firewall_attachment" "controllers" {
-  for_each    = { for i, s in local.servers : s.name => s if s.role == "controller" }
   firewall_id = hcloud_firewall.firewall_controllers.id
-  server_ids  = [hcloud_server.servers[each.key].id]
+  server_ids  = [for s in local.servers : hcloud_server.servers[s.name].id if s.role == "controller"]
 }
