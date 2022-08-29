@@ -32,10 +32,10 @@ resource "hcloud_load_balancer_service" "lb_services" {
 }
 
 resource "hcloud_load_balancer_target" "lb_targets" {
-  for_each         = { for i, t in local.main_workers : i => t }
+  for_each         = { for i, t in local.main_workers : t.name => t }
   type             = "server"
   load_balancer_id = hcloud_load_balancer.lb.id
-  server_id        = hcloud_server.servers[each.value].id
+  server_id        = hcloud_server.servers[each.key].id
   use_private_ip   = true
 
   depends_on = [
@@ -61,11 +61,9 @@ resource "hcloud_firewall" "firewall_bastion" {
 resource "hcloud_firewall" "firewall_controllers" {
   name = "firewall-controllers"
   rule {
-    direction = "in"
-    port      = "6443"
-    protocol  = "tcp"
-    source_ips = [
-      "0.0.0.0/0"
-    ]
+    direction  = "in"
+    port       = "6443"
+    protocol   = "tcp"
+    source_ips = var.my_ip_addresses
   }
 }

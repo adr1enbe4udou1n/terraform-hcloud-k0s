@@ -9,7 +9,7 @@ output "bastion_ip" {
 }
 
 output "controller_ips" {
-  value       = [for c in local.controllers : hcloud_server.servers[c].ipv4_address]
+  value       = [for c in local.controllers : hcloud_server.servers[c.name].ipv4_address]
   description = "Public ip address of the controllers, link them to your cluster_fqdn"
 }
 

@@ -31,7 +31,9 @@ resource "hcloud_server" "servers" {
     server_timezone        = var.server_timezone
     server_locale          = var.server_locale
     cluster_user           = var.cluster_user
-    bastion_ip             = local.private_bastion_ip
+    cluster_fqdn           = var.cluster_fqdn
+    bastion_ip             = local.bastion.ip
+    controller_ip          = one(local.controllers).ip
     public_ssh_key         = var.my_public_ssh_key
     minion_id              = each.value.name
     cluster_public_ssh_key = local.cluster_public_ssh_key

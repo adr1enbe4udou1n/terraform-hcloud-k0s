@@ -24,7 +24,12 @@ packages:
 write_files:
   - path: /etc/hosts
     content: |
+%{ if bastion_ip == controller_ip ~}
+      ${controller_ip} bastion ${cluster_fqdn}
+%{ else ~}
       ${bastion_ip} bastion
+      ${controller_ip} ${cluster_fqdn}
+%{ endif ~}
     append: true
 
 runcmd:
