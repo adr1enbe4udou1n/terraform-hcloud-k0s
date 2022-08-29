@@ -18,11 +18,13 @@ variable "server_location" {
 
 variable "server_timezone" {
   type        = string
+  default     = null
   description = "The default timezone to use for the servers"
 }
 
 variable "server_locale" {
   type        = string
+  default     = null
   description = "The default locale to create hcloud servers"
 }
 
