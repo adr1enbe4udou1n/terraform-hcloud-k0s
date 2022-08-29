@@ -109,7 +109,7 @@ Once terraform installation is complete, terraform will output the SSH config ne
 
 Go to your registrar and edit DNS entry named as above `cluster_fqdn` and point it any `controller_ips`. Then copy the SSH config to your own SSH config, default to `~/.ssh/config`.
 
-Then you can finally use `ssh <cluster_name>` in order to log in to your main control pane node. For other nodes, the control pane node will be used as a bastion for direct access to other nodes, so you can use for example `ssh <cluster_name>-worder-01` to directly access to your *worker-01* node.
+Then you can finally use `ssh <cluster_name>` in order to log in to your main control pane node. For other nodes, the control pane node will be used as a bastion for direct access to other nodes, so you can use for example `ssh <cluster_name>-worker-01` to directly access to your *worker-01* node.
 
 ### Salt
 
