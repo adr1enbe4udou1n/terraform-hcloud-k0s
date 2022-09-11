@@ -40,7 +40,7 @@ resource "hcloud_load_balancer_target" "lb_targets" {
 
   depends_on = [
     hcloud_load_balancer_network.lb_network,
-    hcloud_server.servers
+    hcloud_server_network.servers
   ]
 }
 
