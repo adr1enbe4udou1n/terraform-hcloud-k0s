@@ -55,4 +55,6 @@ resource "hcloud_volume" "volumes" {
   name      = each.key
   size      = each.value.size
   server_id = hcloud_server.servers[each.value.server].id
+  automount = true
+  format    = "ext4"
 }
