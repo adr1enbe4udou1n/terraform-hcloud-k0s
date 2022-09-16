@@ -5,6 +5,10 @@ terraform {
       version = "1.35.1"
     }
   }
+
+  backend "kubernetes" {
+    secret_suffix = "cloud"
+  }
 }
 
 provider "hcloud" {
