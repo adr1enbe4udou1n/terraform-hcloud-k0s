@@ -50,7 +50,7 @@ runcmd:
   - sh bootstrap-salt.sh -M -i ${bastion_server}
   - 'sed -i "s/#master: salt/master: localhost/" /etc/salt/minion'
   - systemctl restart salt-minion
-  - curl -L --output /usr/local/bin/k0sctl "https://github.com/k0sproject/k0sctl/releases/download/v0.13.2/k0sctl-linux-x64"
+  - curl -L --output /usr/local/bin/k0sctl "https://github.com/k0sproject/k0sctl/releases/download/v0.14.0/k0sctl-linux-x64"
   - chmod +x /usr/local/bin/k0sctl
   - chown ${cluster_user}:${cluster_user} /id_cluster* && mv /id_cluster* /home/${cluster_user}/.ssh
   - chown ${cluster_user}:${cluster_user} /k0sctl.yaml && mv /k0sctl.yaml /home/${cluster_user}
